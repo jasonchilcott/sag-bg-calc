@@ -63,6 +63,22 @@ const MainForm = () => {
           <input type="radio" id="hour" name="1st-duration" value="hour"/>
           <label for="hour">1 Hour</label>
         </div>
+        <label for="changes">Wardrobe changes:</label>
+        <input type="number" id="changes" name="changes"
+        min="0" max="10"/>
+
+        <p>Formalwear/Uniform</p>
+
+        <div>
+          <input type="checkbox" id="formalwear" name="formalwear"
+                />
+          <label for="formalwear">Formalwear</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="uniform" name="uniform"/>
+          <label for="uniform">Uniform</label>
+        </div>
         
         
       </form>
