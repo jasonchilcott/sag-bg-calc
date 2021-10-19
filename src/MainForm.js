@@ -80,6 +80,42 @@ const MainForm = () => {
           <label for="uniform">Uniform</label>
         </div>
         
+        <p>Props</p>
+
+        <div>
+          <input type="checkbox" id="camera" name="camera"
+                />
+          <label for="camera">Camera</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="golf-clubs" name="golf-clubs"/>
+          <label for="golf-clubs">Golf Club(s)</label>
+        </div>
+        
+        <div>
+          <input type="checkbox" id="luggage" name="luggage"
+                />
+          <label for="luggage">Luggage</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="pet" name="pet"/>
+          <label for="pet">Pet</label>
+        </div>
+        <div>
+          <input type="checkbox" id="skis" name="skis"
+                />
+          <label for="skis">Skis</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="tennis-racquet" name="tennis-racquet"/>
+          <label for="tennis-racquet">Tennis Racquet</label>
+        </div>
+
+        
+        
         
       </form>
     </div>
