@@ -114,7 +114,46 @@ const MainForm = () => {
           <label for="tennis-racquet">Tennis Racquet</label>
         </div>
 
+        <p>Vehicles</p>
+
+        <div>
+          <input type="checkbox" id="bike" name="bike"
+                />
+          <label for="bike">Bike</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="car" name="car"/>
+          <label for="car">car</label>
+        </div>
         
+        <div>
+          <input type="checkbox" id="moped" name="moped"
+                />
+          <label for="moped">Moped</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="motorcycle" name="motorcycle"/>
+          <label for="motorcycle">Motorcycle</label>
+        </div>
+        <div>
+          <input type="checkbox" id="skates" name="skates"
+                />
+          <label for="skates">Rollerskates/Skateboard</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="trailer" name="trailer"/>
+          <label for="trailer">Trailer</label>
+        </div>
+
+        <label for="misc">Misc. Bump:</label>
+        $<input type="number" id="misc" name="misc"
+        min="0"/>
+
+
+
         
         
       </form>
