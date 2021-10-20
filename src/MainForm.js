@@ -6,7 +6,56 @@ const MainForm = () => {
     <div className="main-form">
       <h4>BG CALC Main Form</h4>
       <form>
-      <label>Time in:</label>
+
+      <p>Base Rate:</p>
+
+      <div>
+          <input type="radio" id="background" name="base-rate" value="background"
+                checked/>
+          <label for="background">Background</label>
+        </div>
+        <div>
+          <input type="radio" id="special-ability" name="base-rate" value="special-ability"/>
+          <label for="special-ability">Special-ability</label>
+        </div>
+        <div>
+          <input type="radio" id="stand-in" name="base-rate" value="stand-in"
+                />
+          <label for="stand-in">Stand-in/Photo Double</label>
+        </div>
+        <div>
+          <input type="radio" id="other" name="base-rate" value="other"/>
+          <label for="other">Other:</label>
+        </div>
+        <label for="other-base">Other Base Rate:</label>
+        $<input type="number" id="other-base" name="other-base"
+        min="0"/>
+
+      <p>Base Rate Bumps</p>
+
+        <div>
+          <input type="checkbox" id="makeup-beard" name="makeup-beard"
+                />
+          <label for="makeup-beard">Makeup/Beard</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="smoke" name="smoke"/>
+          <label for="smoke">Smoke</label>
+        </div>
+
+        <div>
+          <input type="checkbox" id="wet" name="wet"
+                />
+          <label for="wet">Wet</label>
+        </div>
+
+        <label for="other-base-bump">Other Base Rate Bump:</label>
+        $<input type="number" id="other-base-bump" name="other-base-bump"
+        min="0"/>
+
+
+              <label>Time in:</label>
         <input
           className="form-control"
           type="time" id="time-in" name="time-in"
