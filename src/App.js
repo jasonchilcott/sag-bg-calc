@@ -1,8 +1,7 @@
 import React from "react";
 import Header from './Header.js';
-import MainForm from './MainForm.js';
-import Mark from './Mark.js';
-import Summary from './Summary.js'
+import Main from './Main.js';
+
 import SideBar from './SideBar';
 import Footer from './Footer.js';
 
@@ -12,9 +11,8 @@ function App() {
     <div className="App">
       <Header />
       <div className="content-wrapper">
-        <MainForm />
-        <Mark />
-        <Summary />
+        <Main />
+
       </div>
 
       <SideBar />

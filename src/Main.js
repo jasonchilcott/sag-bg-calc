@@ -1,6 +1,13 @@
 import React from "react"
+import Mark from './Mark.js';
+import Summary from './Summary.js'
 
-const MainForm = () => {
+const Main = () => {
+
+  //const totalBaseRate = baseRate + baseRateBumps
+
+
+
 
   return (
     <div className="main-form">
@@ -54,8 +61,8 @@ const MainForm = () => {
         $<input type="number" id="other-base-bump" name="other-base-bump"
         min="0"/>
 
-
-              <label>Time in:</label>
+        <div>
+        <label>Time in:</label>
         <input
           className="form-control"
           type="time" id="time-in" name="time-in"
@@ -65,6 +72,7 @@ const MainForm = () => {
           className="form-control"
           type="time" id="time-out" name="time-out"
         />
+        </div>
         <label>NDB:</label>
         <input
           className="form-control"
@@ -105,7 +113,7 @@ const MainForm = () => {
         />
         <div>
           <input type="radio" id="half" name="1st-duration" value="half"
-                checked/>
+                />
           <label for="half">Half-hour</label>
         </div>
         <div>
@@ -206,8 +214,10 @@ const MainForm = () => {
         
         
       </form>
+      <Mark />
+      <Summary />
     </div>
   )
 }
 
-export default MainForm
+export default Main
