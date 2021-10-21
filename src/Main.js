@@ -10,11 +10,12 @@ const Main = () => {
 
 
   return (
-    <div className="main-form">
-      <h4>BG CALC Main Form</h4>
+    <div className="main">
+
+      
       <form>
 
-      <p>Base Rate:</p>
+      <h2>Base Rate:</h2>
 
       <div>
           <input type="radio" id="background" name="base-rate" value="background"
@@ -34,11 +35,11 @@ const Main = () => {
           <input type="radio" id="other" name="base-rate" value="other"/>
           <label for="other">Other:</label>
         </div>
-        <label for="other-base">Other Base Rate:</label>
-        $<input type="number" id="other-base" name="other-base"
+        <label for="other-base">Other Base Rate: $</label>
+        <input type="number" id="other-base" name="other-base"
         min="0"/>
 
-      <p>Base Rate Bumps</p>
+      <h2>Base Rate Bumps</h2>
 
         <div>
           <input type="checkbox" id="makeup-beard" name="makeup-beard"
@@ -57,11 +58,12 @@ const Main = () => {
           <label for="wet">Wet</label>
         </div>
 
-        <label for="other-base-bump">Other Base Rate Bump:</label>
-        $<input type="number" id="other-base-bump" name="other-base-bump"
+        <label for="other-base-bump">Other Base Rate Bump: $</label>
+        <input type="number" id="other-base-bump" name="other-base-bump"
         min="0"/>
 
         <div>
+          <h2>Hours</h2>
         <label>Time in:</label>
         <input
           className="form-control"
@@ -73,13 +75,25 @@ const Main = () => {
           type="time" id="time-out" name="time-out"
         />
         </div>
+        <h2>Meals</h2>
+        <div>
+          <div>
         <label>NDB:</label>
+        <input type="radio" id="no-ndb" name="ndb" value="false"
+                checked/>
+          <label for="no-ndb">None</label>
+          <input type="radio" id="yes-ndb" name="ndb" value="true"/>
+          <label for="yes-ndb">NDB at:</label>
+          <div>
+
         <input
           className="form-control"
-          type="time" id="ndb" name="ndb"
+          type="time" id="ndb-time" name="ndb-time"
         />
-        <p>Meals</p>
-        <div>
+        </div>
+        </div>
+
+        <h3>Meal Breaks</h3>
           <input type="radio" id="0" name="meals" value="0"
                 checked/>
           <label for="0">0</label>
@@ -120,11 +134,14 @@ const Main = () => {
           <input type="radio" id="hour" name="1st-duration" value="hour"/>
           <label for="hour">1 Hour</label>
         </div>
+
+        <h2>Other Bumps</h2>
+        <div>
         <label for="changes">Wardrobe changes:</label>
         <input type="number" id="changes" name="changes"
         min="0" max="10"/>
 
-        <p>Formalwear/Uniform</p>
+        <h3>Formalwear/Uniform</h3>
 
         <div>
           <input type="checkbox" id="formalwear" name="formalwear"
@@ -137,7 +154,7 @@ const Main = () => {
           <label for="uniform">Uniform</label>
         </div>
         
-        <p>Props</p>
+        <h3>Props</h3>
 
         <div>
           <input type="checkbox" id="camera" name="camera"
@@ -171,7 +188,7 @@ const Main = () => {
           <label for="tennis-racquet">Tennis Racquet</label>
         </div>
 
-        <p>Vehicles</p>
+        <h3>Vehicles</h3>
 
         <div>
           <input type="checkbox" id="bike" name="bike"
@@ -205,9 +222,12 @@ const Main = () => {
           <label for="trailer">Trailer</label>
         </div>
 
+        <h3>Misc.</h3>
+
         <label for="misc">Misc. Bump:</label>
         $<input type="number" id="misc" name="misc"
         min="0"/>
+        </div>
 
 
 
