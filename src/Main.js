@@ -1,10 +1,46 @@
-import React from "react"
+import React, {useState} from "react"
 import Mark from './Mark.js';
 import Summary from './Summary.js'
 
+
+const baseRateObj = { 'background': 182, 'specialAbility': 192, 'standIn': 214}
 const Main = () => {
 
   //const totalBaseRate = baseRate + baseRateBumps
+
+  const [role, setRole] = useState('background')
+  
+  const [ otherBaseRate, setOtherBaseRate] = useState(0)
+
+  const roleHandler = (e) => {
+    setRole(e.target.value)
+  }
+
+  const otherBaseRateHandler = (e) => {
+    setOtherBaseRate(e.target.value)
+  }
+
+  const baseRate = () => {
+    
+
+    
+    if ( role === 'other' ) {
+      return otherBaseRate
+    } else {
+      return baseRateObj[role]
+    }
+    
+    
+  }
+
+  
+
+  console.log(baseRateObj[role])
+
+
+  
+
+
 
 
 
@@ -18,25 +54,25 @@ const Main = () => {
       <h2>Base Rate:</h2>
 
       <div>
-          <input type="radio" id="background" name="base-rate" value="background"
-                checked/>
-          <label for="background">Background</label>
+          <input type="radio" id="background" name="role" value="background"
+            onChange={roleHandler} defaultChecked/>
+          <label htmlFor="background">Background</label>
         </div>
         <div>
-          <input type="radio" id="special-ability" name="base-rate" value="special-ability"/>
-          <label for="special-ability">Special-ability</label>
+          <input type="radio" id="special-ability" name="role" value="specialAbility" onChange={roleHandler}/>
+          <label htmlFor="special-ability">Special-ability</label>
         </div>
         <div>
-          <input type="radio" id="stand-in" name="base-rate" value="stand-in"
+          <input type="radio" id="stand-in" name="role" value="standIn" onChange={roleHandler}
                 />
-          <label for="stand-in">Stand-in/Photo Double</label>
+          <label htmlFor="stand-in">Stand-in/Photo Double</label>
         </div>
         <div>
-          <input type="radio" id="other" name="base-rate" value="other"/>
-          <label for="other">Other:</label>
+          <input type="radio" id="other" name="role" value="other" onChange={roleHandler}/>
+          <label htmlFor="other">Other:</label>
         </div>
-        <label for="other-base">Other Base Rate: $</label>
-        <input type="number" id="other-base" name="other-base"
+        <label htmlFor="other-base" >Other Base Rate: $</label>
+        <input type="number" id="other-base" name="other-base" value={otherBaseRate} onChange={otherBaseRateHandler}
         min="0"/>
 
       <h2>Base Rate Bumps</h2>
@@ -44,21 +80,21 @@ const Main = () => {
         <div>
           <input type="checkbox" id="makeup-beard" name="makeup-beard"
                 />
-          <label for="makeup-beard">Makeup/Beard</label>
+          <label htmlFor="makeup-beard">Makeup/Beard</label>
         </div>
 
         <div>
           <input type="checkbox" id="smoke" name="smoke"/>
-          <label for="smoke">Smoke</label>
+          <label htmlFor="smoke">Smoke</label>
         </div>
 
         <div>
           <input type="checkbox" id="wet" name="wet"
                 />
-          <label for="wet">Wet</label>
+          <label htmlFor="wet">Wet</label>
         </div>
 
-        <label for="other-base-bump">Other Base Rate Bump: $</label>
+        <label htmlFor="other-base-bump">Other Base Rate Bump: $</label>
         <input type="number" id="other-base-bump" name="other-base-bump"
         min="0"/>
 
@@ -66,12 +102,12 @@ const Main = () => {
           <h2>Hours</h2>
         <label>Time in:</label>
         <input
-          className="form-control"
+          
           type="time" id="time-in" name="time-in"
         />
         <label>Time out:</label>
         <input
-          className="form-control"
+          
           type="time" id="time-out" name="time-out"
         />
         </div>
@@ -80,14 +116,14 @@ const Main = () => {
           <div>
         <label>NDB:</label>
         <input type="radio" id="no-ndb" name="ndb" value="false"
-                checked/>
-          <label for="no-ndb">None</label>
+                />
+          <label htmlFor="no-ndb">None</label>
           <input type="radio" id="yes-ndb" name="ndb" value="true"/>
-          <label for="yes-ndb">NDB at:</label>
+          <label htmlFor="yes-ndb">NDB at:</label>
           <div>
 
         <input
-          className="form-control"
+          
           type="time" id="ndb-time" name="ndb-time"
         />
         </div>
@@ -95,49 +131,49 @@ const Main = () => {
 
         <h3>Meal Breaks</h3>
           <input type="radio" id="0" name="meals" value="0"
-                checked/>
-          <label for="0">0</label>
+                defaultChecked/>
+          <label htmlFor="0">0</label>
         </div>
         <div>
           <input type="radio" id="1" name="meals" value="1"/>
-          <label for="1">1</label>
+          <label htmlFor="1">1</label>
         </div>
         <div>
           <input type="radio" id="2" name="meals" value="2"/>
-          <label for="2">2</label>
+          <label htmlFor="2">2</label>
         </div>
         <label>1st Meal</label>
         <input
-          className="form-control"
+          className="htmlForm-control"
           type="time" id="1st-meal" name="1st-meal"
         />
         <div>
           <input type="radio" id="half" name="1st-duration" value="half"
-                checked/>
-          <label for="half">Half-hour</label>
+                />
+          <label htmlFor="half">Half-hour</label>
         </div>
         <div>
           <input type="radio" id="hour" name="1st-duration" value="hour"/>
-          <label for="hour">1 Hour</label>
+          <label htmlFor="hour">1 Hour</label>
         </div>
         <label>2nd Meal</label>
         <input
-          className="form-control"
+          
           type="time" id="2nd-meal" name="2nd-meal"
         />
         <div>
           <input type="radio" id="half" name="1st-duration" value="half"
                 />
-          <label for="half">Half-hour</label>
+          <label htmlFor="half">Half-hour</label>
         </div>
         <div>
           <input type="radio" id="hour" name="1st-duration" value="hour"/>
-          <label for="hour">1 Hour</label>
+          <label htmlFor="hour">1 Hour</label>
         </div>
 
         <h2>Other Bumps</h2>
         <div>
-        <label for="changes">Wardrobe changes:</label>
+        <label htmlFor="changes">Wardrobe changes:</label>
         <input type="number" id="changes" name="changes"
         min="0" max="10"/>
 
@@ -146,12 +182,12 @@ const Main = () => {
         <div>
           <input type="checkbox" id="formalwear" name="formalwear"
                 />
-          <label for="formalwear">Formalwear</label>
+          <label htmlFor="formalwear">Formalwear</label>
         </div>
 
         <div>
           <input type="checkbox" id="uniform" name="uniform"/>
-          <label for="uniform">Uniform</label>
+          <label htmlFor="uniform">Uniform</label>
         </div>
         
         <h3>Props</h3>
@@ -159,33 +195,33 @@ const Main = () => {
         <div>
           <input type="checkbox" id="camera" name="camera"
                 />
-          <label for="camera">Camera</label>
+          <label htmlFor="camera">Camera</label>
         </div>
 
         <div>
           <input type="checkbox" id="golf-clubs" name="golf-clubs"/>
-          <label for="golf-clubs">Golf Club(s)</label>
+          <label htmlFor="golf-clubs">Golf Club(s)</label>
         </div>
         
         <div>
           <input type="checkbox" id="luggage" name="luggage"
                 />
-          <label for="luggage">Luggage</label>
+          <label htmlFor="luggage">Luggage</label>
         </div>
 
         <div>
           <input type="checkbox" id="pet" name="pet"/>
-          <label for="pet">Pet</label>
+          <label htmlFor="pet">Pet</label>
         </div>
         <div>
           <input type="checkbox" id="skis" name="skis"
                 />
-          <label for="skis">Skis</label>
+          <label htmlFor="skis">Skis</label>
         </div>
 
         <div>
           <input type="checkbox" id="tennis-racquet" name="tennis-racquet"/>
-          <label for="tennis-racquet">Tennis Racquet</label>
+          <label htmlFor="tennis-racquet">Tennis Racquet</label>
         </div>
 
         <h3>Vehicles</h3>
@@ -193,45 +229,47 @@ const Main = () => {
         <div>
           <input type="checkbox" id="bike" name="bike"
                 />
-          <label for="bike">Bike</label>
+          <label htmlFor="bike">Bike</label>
         </div>
 
         <div>
           <input type="checkbox" id="car" name="car"/>
-          <label for="car">car</label>
+          <label htmlFor="car">car</label>
         </div>
         
         <div>
           <input type="checkbox" id="moped" name="moped"
                 />
-          <label for="moped">Moped</label>
+          <label htmlFor="moped">Moped</label>
         </div>
 
         <div>
           <input type="checkbox" id="motorcycle" name="motorcycle"/>
-          <label for="motorcycle">Motorcycle</label>
+          <label htmlFor="motorcycle">Motorcycle</label>
         </div>
         <div>
           <input type="checkbox" id="skates" name="skates"
                 />
-          <label for="skates">Rollerskates/Skateboard</label>
+          <label htmlFor="skates">Rollerskates/Skateboard</label>
         </div>
 
         <div>
           <input type="checkbox" id="trailer" name="trailer"/>
-          <label for="trailer">Trailer</label>
+          <label htmlFor="trailer">Trailer</label>
         </div>
 
         <h3>Misc.</h3>
 
-        <label for="misc">Misc. Bump:</label>
+        <label htmlFor="misc">Misc. Bump:</label>
         $<input type="number" id="misc" name="misc"
         min="0"/>
         </div>
 
 
 
-        
+        <h4>role: {role}</h4>
+        <h4>baseRate: </h4>
+        <h4>baseRate: {baseRate()}</h4>
         
       </form>
       <Mark />
