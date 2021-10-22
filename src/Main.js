@@ -9,7 +9,6 @@ const Main = () => {
   //const totalBaseRate = baseRate + baseRateBumps
 
   const [role, setRole] = useState('background')
-  
   const [ otherBaseRate, setOtherBaseRate] = useState(0)
 
   const roleHandler = (e) => {
@@ -21,19 +20,25 @@ const Main = () => {
   }
 
   const baseRate = () => {
-    
-
-    
     if ( role === 'other' ) {
       return otherBaseRate
     } else {
       return baseRateObj[role]
     }
-    
-    
   }
 
-  
+  const otherBaseRateField = () => {
+    if ( role === 'other') {
+      return (
+        <>
+        <label htmlFor="other-base" >Other Base Rate: $</label>
+        <input type="number" id="other-base" name="other-base" value={otherBaseRate} onChange={otherBaseRateHandler}
+        min="0"/>
+        </>
+
+      )
+    }
+  }
 
   console.log(baseRateObj[role])
 
@@ -71,9 +76,9 @@ const Main = () => {
           <input type="radio" id="other" name="role" value="other" onChange={roleHandler}/>
           <label htmlFor="other">Other:</label>
         </div>
-        <label htmlFor="other-base" >Other Base Rate: $</label>
-        <input type="number" id="other-base" name="other-base" value={otherBaseRate} onChange={otherBaseRateHandler}
-        min="0"/>
+        <div>
+        {otherBaseRateField()}
+        </div>
 
       <h2>Base Rate Bumps</h2>
 
