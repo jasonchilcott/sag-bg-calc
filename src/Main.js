@@ -6,7 +6,7 @@ import Summary from './Summary.js'
 const baseRateObj = { 'background': 182, 'specialAbility': 192, 'standIn': 214}
 const Main = () => {
 
-  //const totalBaseRate = baseRate + baseRateBumps
+
 
   const [role, setRole] = useState('background')
   const [ otherBaseRate, setOtherBaseRate] = useState(0)
@@ -40,7 +40,7 @@ const Main = () => {
     }
   }
 
-  console.log(baseRateObj[role])
+  
 
 
   
