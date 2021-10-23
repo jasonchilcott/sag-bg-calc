@@ -11,8 +11,10 @@ const Main = () => {
   const [baseBumps, setBaseBumps] = useState([false, false, false, false]);
   const [otherBaseBump, setOtherBaseBump] = useState(0);
   const [inTime, setInTime] = useState('');
-  const [outTime, setOutTime] = useState('')
-  const [ndb, setNdb] = useState(false)
+  const [outTime, setOutTime] = useState('');
+  const [ndb, setNdb] = useState(false);
+  const [ndbTime, setNdbTime] = useState('');
+  const [mealBreaks, setMealBreaks] = useState(0)
 
   const roleHandler = (e) => {
     setRole(e.target.value);
@@ -43,6 +45,8 @@ const Main = () => {
       setInTime(e.target.value)
     } else if (e.target.name === 'outTime') {
       setOutTime(e.target.value)
+    } else if (e.target.name === 'ndbTime') {
+      setNdbTime(e.target.value)
     }
   }
 
@@ -93,8 +97,6 @@ const Main = () => {
     }
   }; 
 
-
-
   const otherBaseBumpField = () => {
     if (baseBumps[3]) {
       return (
@@ -113,8 +115,16 @@ const Main = () => {
     }
   };
 
-  const ndbHandler = (e) => {
-    setNdb(e.target.value)
+  const ndbHandler = () => {
+    setNdb(!ndb)
+    if (!ndb) {
+      setNdbTime('')
+    }
+  }
+
+  const maxNdb = () => {
+    const start = new Date(inTime)
+    return start.setHours( start.getHours() + 2 )
   }
 
   const ndbField = () => {
@@ -122,12 +132,66 @@ const Main = () => {
       return (
         <>
           <div>
-              <input type="time" id="ndb-time" name="ndb-time" />
+              <input type="time" id="ndb-time" name="ndbTime" min={inTime} max={maxNdb()} value={ndbTime} onChange={timeHandler}/>
             </div>
         </>
       );
     }
   }; 
+
+  const breaksHandler = (e) => {
+    setMealBreaks(e.target.value);
+  };
+
+  const mealBreaksField = () => {
+    console.log(mealBreaks)
+    const firstMeal = () => {
+      return(
+      <>
+      <label>1st Meal</label>
+          <input
+            className="htmlForm-control"
+            type="time"
+            id="firstMeal"
+            name="firstMeal"
+          />
+          <div>
+            <input type="radio" id="half" name="firstDuration" value="00:30" />
+            <label htmlFor="half">Half-hour</label>
+          </div>
+          <div>
+            <input type="radio" id="hour" name="firstDuration" value="01:00" />
+            <label htmlFor="hour">1 Hour</label>
+          </div>
+          </>)
+    }
+    const secondMeal = () => {
+      return(
+      <>
+      <label>2nd Meal</label>
+        <input type="time" id="2nd-meal" name="secondMeal" />
+        <div>
+          <input type="radio" id="half" name="secondDuration" value="00:30" />
+          <label htmlFor="half">Half-hour</label>
+        </div>
+        <div>
+          <input type="radio" id="hour" name="secondDuration" value="01:00" />
+          <label htmlFor="hour">1 Hour</label>
+        </div>
+        </>)
+    }
+
+    if (parseInt(mealBreaks) === 1) {
+      return firstMeal()
+    }
+    if (parseInt(mealBreaks) === 2) {
+      return <>{firstMeal()} {secondMeal()}</>
+    }
+  }
+
+
+
+
 
   return (
     <div className="main">
@@ -208,7 +272,7 @@ const Main = () => {
         <div>
           <div>
             <label>NDB:</label>
-            <input type="radio" id="no-ndb" name="ndb" value={ndb} onChange={ndbHandler}/>
+            <input type="radio" id="no-ndb" name="ndb" value={ndb} defaultChecked onChange={ndbHandler}/>
             <label htmlFor="ndb">None</label>
             <input type="radio" id="yes-ndb" name="ndb" value={ndb} onChange={ndbHandler}/>
             <label htmlFor="ndb">NDB at:</label>
@@ -216,42 +280,21 @@ const Main = () => {
             
           </div>
           <h3>Meal Breaks</h3>
-          <input type="radio" id="0" name="meals" value="0" defaultChecked />
+          <input type="radio" id="0" name="meals" value="0" defaultChecked onChange={breaksHandler}/>
           <label htmlFor="0">0</label>
         </div>
         <div>
-          <input type="radio" id="1" name="meals" value="1" />
+          <input type="radio" id="1" name="meals" value="1" onChange={breaksHandler}/>
           <label htmlFor="1">1</label>
         </div>
         <div>
-          <input type="radio" id="2" name="meals" value="2" />
+          <input type="radio" id="2" name="meals" value="2" onChange={breaksHandler}/>
           <label htmlFor="2">2</label>
         </div>
-        <label>1st Meal</label>
-        <input
-          className="htmlForm-control"
-          type="time"
-          id="1st-meal"
-          name="1st-meal"
-        />
-        <div>
-          <input type="radio" id="half" name="1st-duration" value="half" />
-          <label htmlFor="half">Half-hour</label>
-        </div>
-        <div>
-          <input type="radio" id="hour" name="1st-duration" value="hour" />
-          <label htmlFor="hour">1 Hour</label>
-        </div>
-        <label>2nd Meal</label>
-        <input type="time" id="2nd-meal" name="2nd-meal" />
-        <div>
-          <input type="radio" id="half" name="1st-duration" value="half" />
-          <label htmlFor="half">Half-hour</label>
-        </div>
-        <div>
-          <input type="radio" id="hour" name="1st-duration" value="hour" />
-          <label htmlFor="hour">1 Hour</label>
-        </div>
+
+        {mealBreaksField()}
+        
+        
         <h2>Other Bumps</h2>
         <div>
           <label htmlFor="changes">Wardrobe changes:</label>
