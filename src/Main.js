@@ -8,28 +8,42 @@ const baseBumpsArr = [19, 14, 14, 0]
 const Main = () => {
   const [role, setRole] = useState("background");
   const [otherBaseRate, setOtherBaseRate] = useState(0);
-
   const [baseBumps, setBaseBumps] = useState([false, false, false, false]);
   const [otherBaseBump, setOtherBaseBump] = useState(0);
+  const [inTime, setInTime] = useState('');
+  const [outTime, setOutTime] = useState('')
 
   const roleHandler = (e) => {
     setRole(e.target.value);
-  };
-
-  const baseBumpsHandler = (e) => {
-    let newBumpsArr = [...baseBumps]
-    newBumpsArr[e.target.value] = !newBumpsArr[e.target.value]
-    setBaseBumps(newBumpsArr)
-    
   };
 
   const otherBaseRateHandler = (e) => {
     setOtherBaseRate(e.target.value);
   };
 
+  const baseBumpsHandler = (e) => {
+    let newBumpsArr = [...baseBumps]
+    newBumpsArr[e.target.value] = !newBumpsArr[e.target.value]
+    setBaseBumps(newBumpsArr)
+  };
+
   const otherBaseBumpHandler = (e) => {
     setOtherBaseBump(e.target.value);
   };
+
+  //const capitalize = (str) => { str.charAt(0).toUpperCase() + str.slice(1) }
+
+  const timeHandler = (e) => {
+    // console.log(e.target.name)
+    // let setter = 'set' + capitalize(e.target.name)
+    // eval(setter).call(e.target.value)
+
+    if (e.target.name === 'inTime') {
+      setInTime(e.target.value)
+    } else if (e.target.name === 'outTime') {
+      setOutTime(e.target.value)
+    }
+  }
 
   const baseRate = () => {
     if (role === "other") {
@@ -38,21 +52,11 @@ const Main = () => {
       return baseRateObj[role];
     }
   };
-
-  const totalBaseRate = () => {
-    return totalBaseBumps().reduce(
-      (a, b) => a + b, 
-      baseRate()
-    )
-  }
-
   const totalBaseBumps = () => {
     let newBumpsArr = [...baseBumpsArr]
-    console.log(newBumpsArr)
     if (baseBumps[3]) {
       newBumpsArr[3] = otherBaseBump
     } 
-    console.log(newBumpsArr)
     newBumpsArr = newBumpsArr.map((bump, i) => {
       if (baseBumps[i] === false) {
         return 0
@@ -60,8 +64,14 @@ const Main = () => {
         return bump
       }
     })
-    console.log(newBumpsArr)
     return newBumpsArr
+  }
+
+  const totalBaseRate = () => {
+    return totalBaseBumps().reduce(
+      (a, b) => a + b, 
+      baseRate()
+    )
   }
 
   const otherBaseRateField = () => {
@@ -81,7 +91,7 @@ const Main = () => {
       );
     }
   }; 
-  
+
 
 
   const otherBaseBumpField = () => {
@@ -106,7 +116,6 @@ const Main = () => {
     <div className="main">
       <form>
         <h2>Base Rate:</h2>
-
         <div>
           <input
             type="radio"
@@ -149,9 +158,7 @@ const Main = () => {
           <label htmlFor="other">Other:</label>
         </div>
         <div>{otherBaseRateField()}</div>
-
         <h2>Base Rate Bumps</h2>
-
         <div>
           <input type="checkbox" id="makeup-beard" name="base-bump" value="0" checked={baseBumps[0]} onChange={baseBumpsHandler} />
           <label htmlFor="makeup-beard">Makeup/Beard</label>
@@ -171,17 +178,14 @@ const Main = () => {
           <input type="checkbox" id="other-base-rate-bump" name="base-bump" value="3" checked={baseBumps[3]} onChange={baseBumpsHandler}/>
           <label htmlFor="other">Other:</label>
         </div>
-
         <div>{otherBaseBumpField()}</div>
-
         
-
         <div>
           <h2>Hours</h2>
           <label>Time in:</label>
-          <input type="time" id="time-in" name="time-in" />
+          <input type="time" id="in-time" name="inTime" value={inTime} onChange={timeHandler}/>
           <label>Time out:</label>
-          <input type="time" id="time-out" name="time-out" />
+          <input type="time" id="out-time" name="outTime" value={outTime} onChange={timeHandler}/>
         </div>
         <h2>Meals</h2>
         <div>
@@ -195,7 +199,6 @@ const Main = () => {
               <input type="time" id="ndb-time" name="ndb-time" />
             </div>
           </div>
-
           <h3>Meal Breaks</h3>
           <input type="radio" id="0" name="meals" value="0" defaultChecked />
           <label htmlFor="0">0</label>
@@ -233,7 +236,6 @@ const Main = () => {
           <input type="radio" id="hour" name="1st-duration" value="hour" />
           <label htmlFor="hour">1 Hour</label>
         </div>
-
         <h2>Other Bumps</h2>
         <div>
           <label htmlFor="changes">Wardrobe changes:</label>
@@ -301,14 +303,12 @@ const Main = () => {
           <label htmlFor="misc">Misc. Bump:</label>
           $<input type="number" id="misc" name="misc" min="0" />
         </div>
-
         <h4>role: {role}</h4>
-        
         <h4>base Rate: {baseRate()}</h4>
-
         <h4>base Rate Bumps: {totalBaseBumps()}</h4>
-
         <h4>total base Rate: {totalBaseRate()}</h4>
+        <h4>time in: {inTime}</h4>
+        <h4>time out: {outTime}</h4>
       </form>
       <Mark />
       <Summary />
