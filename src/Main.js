@@ -12,6 +12,7 @@ const Main = () => {
   const [otherBaseBump, setOtherBaseBump] = useState(0);
   const [inTime, setInTime] = useState('');
   const [outTime, setOutTime] = useState('')
+  const [ndb, setNdb] = useState(false)
 
   const roleHandler = (e) => {
     setRole(e.target.value);
@@ -112,6 +113,22 @@ const Main = () => {
     }
   };
 
+  const ndbHandler = (e) => {
+    setNdb(e.target.value)
+  }
+
+  const ndbField = () => {
+    if (ndb) {
+      return (
+        <>
+          <div>
+              <input type="time" id="ndb-time" name="ndb-time" />
+            </div>
+        </>
+      );
+    }
+  }; 
+
   return (
     <div className="main">
       <form>
@@ -191,13 +208,12 @@ const Main = () => {
         <div>
           <div>
             <label>NDB:</label>
-            <input type="radio" id="no-ndb" name="ndb" value="false" />
+            <input type="radio" id="no-ndb" name="ndb" value={ndb} onChange={ndbHandler}/>
             <label htmlFor="no-ndb">None</label>
-            <input type="radio" id="yes-ndb" name="ndb" value="true" />
-            <label htmlFor="yes-ndb">NDB at:</label>
-            <div>
-              <input type="time" id="ndb-time" name="ndb-time" />
-            </div>
+            <input type="radio" id="yes-ndb" name="ndb" value={ndb} onChange={ndbHandler}/>
+            <label htmlFor="ndb-time">NDB at:</label>
+            <div>{ndbField()}</div>
+            
           </div>
           <h3>Meal Breaks</h3>
           <input type="radio" id="0" name="meals" value="0" defaultChecked />
