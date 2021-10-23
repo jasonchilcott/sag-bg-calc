@@ -209,9 +209,9 @@ const Main = () => {
           <div>
             <label>NDB:</label>
             <input type="radio" id="no-ndb" name="ndb" value={ndb} onChange={ndbHandler}/>
-            <label htmlFor="no-ndb">None</label>
+            <label htmlFor="ndb">None</label>
             <input type="radio" id="yes-ndb" name="ndb" value={ndb} onChange={ndbHandler}/>
-            <label htmlFor="ndb-time">NDB at:</label>
+            <label htmlFor="ndb">NDB at:</label>
             <div>{ndbField()}</div>
             
           </div>
