@@ -14,7 +14,11 @@ const Main = () => {
   const [outTime, setOutTime] = useState('');
   const [ndb, setNdb] = useState(false);
   const [ndbTime, setNdbTime] = useState('');
-  const [mealBreaks, setMealBreaks] = useState(0)
+  const [mealBreaks, setMealBreaks] = useState(0);
+  const [firstMeal, setFirstMeal] = useState('');
+  const [firstLength, setFirstLength] = useState('')
+  const [secondMeal, setSecondMeal] = useState('')
+  const [secondLength, setSecondLength] = useState('')
 
   const roleHandler = (e) => {
     setRole(e.target.value);
@@ -47,6 +51,10 @@ const Main = () => {
       setOutTime(e.target.value)
     } else if (e.target.name === 'ndbTime') {
       setNdbTime(e.target.value)
+    } else if (e.target.name === 'firstMeal') {
+      setFirstMeal(e.target.value)
+    } else if (e.target.name === 'secondMeal') {
+      setSecondMeal(e.target.value)
     }
   }
 
@@ -144,7 +152,6 @@ const Main = () => {
   };
 
   const mealBreaksField = () => {
-    console.log(mealBreaks)
     const firstMeal = () => {
       return(
       <>
@@ -154,28 +161,32 @@ const Main = () => {
             type="time"
             id="firstMeal"
             name="firstMeal"
+            min={inTime}
+            max={outTime}
+            onChange={timeHandler}
           />
           <div>
-            <input type="radio" id="half" name="firstDuration" value="00:30" />
+            <input type="radio" id="half" name="firstLength" value="00:30" onChange={lengthHandler}/>
             <label htmlFor="half">Half-hour</label>
           </div>
           <div>
-            <input type="radio" id="hour" name="firstDuration" value="01:00" />
+            <input type="radio" id="hour" name="firstLength" value="01:00" onChange={lengthHandler}/>
             <label htmlFor="hour">1 Hour</label>
           </div>
           </>)
     }
+
     const secondMeal = () => {
       return(
       <>
       <label>2nd Meal</label>
-        <input type="time" id="2nd-meal" name="secondMeal" />
+        <input type="time" id="2nd-meal" name="secondMeal" min={firstMeal} max={outTime} onChange={timeHandler}/>
         <div>
-          <input type="radio" id="half" name="secondDuration" value="00:30" />
+          <input type="radio" id="half" name="secondLength" value="00:30" onChange={lengthHandler}/>
           <label htmlFor="half">Half-hour</label>
         </div>
         <div>
-          <input type="radio" id="hour" name="secondDuration" value="01:00" />
+          <input type="radio" id="hour" name="secondLength" value="01:00" onChange={lengthHandler}/>
           <label htmlFor="hour">1 Hour</label>
         </div>
         </>)
@@ -188,6 +199,14 @@ const Main = () => {
       return <>{firstMeal()} {secondMeal()}</>
     }
   }
+
+  const lengthHandler = (e) => {
+    if (e.target.name === 'firstLength') {
+      setFirstLength(e.target.value)
+    } else if (e.target.name === 'secondLength') {
+      setSecondLength (e.target.value)
+    }
+  } 
 
 
 
@@ -266,7 +285,7 @@ const Main = () => {
           <label>Time in:</label>
           <input type="time" id="in-time" name="inTime" value={inTime} onChange={timeHandler}/>
           <label>Time out:</label>
-          <input type="time" id="out-time" name="outTime" value={outTime} onChange={timeHandler}/>
+          <input type="time" id="out-time" name="outTime" min={inTime} value={outTime} onChange={timeHandler}/>
         </div>
         <h2>Meals</h2>
         <div>
@@ -368,6 +387,11 @@ const Main = () => {
         <h4>total base Rate: {totalBaseRate()}</h4>
         <h4>time in: {inTime}</h4>
         <h4>time out: {outTime}</h4>
+        <h4>nbd: {ndbTime}</h4>
+        <h4>first Meal: {firstMeal}</h4>
+        <h4>1st length: {firstLength}</h4>
+        <h4>second meal: {secondMeal}</h4>
+        <h4>2nd length: {secondLength}</h4>
       </form>
       <Mark />
       <Summary />
