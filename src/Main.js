@@ -5,6 +5,8 @@ import Summary from "./Summary.js";
 
 const baseRateObj = { background: 182, specialAbility: 192, standIn: 214 };
 const baseBumpsArr = [19, 14, 14, 0]
+const propsArr = [5.5, 12, 5.5, 23, 12, 5.5]
+
 
 const Main = () => {
   const [role, setRole] = useState("background");
@@ -20,6 +22,10 @@ const Main = () => {
   const [firstLength, setFirstLength] = useState('')
   const [secondMeal, setSecondMeal] = useState('')
   const [secondLength, setSecondLength] = useState('')
+  const [changes, setChanges] = 0
+  const [formalUni, setFormalUni] = useState([false, false])
+  const [props, setProps] = useState([false, false, false, false, false, false])
+  //const [vehicles, setVehicles] = useState([false, false, false, false, false, false, false])
 
   const roleHandler = (e) => {
     setRole(e.target.value);
@@ -215,7 +221,7 @@ const Main = () => {
     console.log(start)
     let end = DateTime.fromISO(outTime)
     console.log(start)
-    console.log(end.diff(start).toFormat('h'))
+    console.log(end.diff(start).as('hours'))
     return end.diff(start)
 
   }
@@ -382,7 +388,7 @@ console.log(hoursMinusMeals())
             <input type="checkbox" id="tennis-racquet" name="tennis-racquet" />
             <label htmlFor="tennis-racquet">Tennis Racquet</label>
           </div>
-          <h3>Vehicles</h3>
+          {/* <h3>Vehicles</h3>
           <div>
             <input type="checkbox" id="bike" name="bike" />
             <label htmlFor="bike">Bike</label>
@@ -406,7 +412,7 @@ console.log(hoursMinusMeals())
           <div>
             <input type="checkbox" id="trailer" name="trailer" />
             <label htmlFor="trailer">Trailer</label>
-          </div>
+          </div> */}
           <h3>Misc.</h3>
           <label htmlFor="misc">Misc. Bump:</label>
           $<input type="number" id="misc" name="misc" min="0" />
