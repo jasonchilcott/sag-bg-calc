@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DateTime, Duration  } from "luxon";
 import Mark from "./Mark.js";
 import Summary from "./Summary.js";
 
@@ -56,6 +57,7 @@ const Main = () => {
     } else if (e.target.name === 'secondMeal') {
       setSecondMeal(e.target.value)
     }
+    
   }
 
   const baseRate = () => {
@@ -131,8 +133,8 @@ const Main = () => {
   }
 
   const maxNdb = () => {
-    const start = new Date(inTime)
-    return start.setHours( start.getHours() + 2 )
+    const start = DateTime.fromISO(inTime)
+    return start.plus({ hours: 2 }).toLocaleString(DateTime.TIME_24_SIMPLE)
   }
 
   const ndbField = () => {
@@ -208,8 +210,36 @@ const Main = () => {
     }
   } 
 
+  const rawHours = () => {
+    let start = DateTime.fromISO(inTime)
+    console.log(start)
+    let end = DateTime.fromISO(outTime)
+    console.log(start)
+    console.log(end.diff(start).toFormat('h'))
+    return end.diff(start)
 
+  }
 
+  const hoursMinusMeals = () => {
+    if ((firstLength !== "" )) {
+      let combined = "0"
+      let first = Duration.fromISOTime(firstLength)
+      console.log(first)
+      if ((secondLength !== "" )) {
+        let second = Duration.fromISOTime(secondLength)
+        console.log(second)
+        combined = first.plus(second)
+    } else {
+      combined = first
+    }
+      console.log(combined)
+      return ( rawHours().as('hours') )
+      
+    }
+    return "0"
+  }
+
+console.log(hoursMinusMeals())
 
 
   return (
@@ -388,10 +418,14 @@ const Main = () => {
         <h4>time in: {inTime}</h4>
         <h4>time out: {outTime}</h4>
         <h4>nbd: {ndbTime}</h4>
+        <h4>max ndb: {maxNdb()}</h4>
         <h4>first Meal: {firstMeal}</h4>
         <h4>1st length: {firstLength}</h4>
         <h4>second meal: {secondMeal}</h4>
         <h4>2nd length: {secondLength}</h4>
+        <h4>hours minus meals: {Math.ceil(hoursMinusMeals() * 10) / 10}</h4>
+        {/* <h4>raw hours: {rawHours()}</h4> */}
+        
       </form>
       <Mark />
       <Summary />
