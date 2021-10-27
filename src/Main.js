@@ -279,7 +279,7 @@ const Main = () => {
       if (proops[i] === false) {
         return 0
       } else {
-        return prop
+        return proop
       }
     })
     let totalProops = newProopsArr.reduce(
