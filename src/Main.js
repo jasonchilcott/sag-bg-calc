@@ -275,7 +275,7 @@ const Main = () => {
       let addtl = (changes - 1) * 6.25
       wardrobe += addtl
     }
-    let newProopsArr = proopsArr.map((prop, i) => {
+    let newProopsArr = proopsArr.map((proop, i) => {
       if (proops[i] === false) {
         return 0
       } else {
