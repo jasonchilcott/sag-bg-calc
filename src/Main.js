@@ -287,18 +287,31 @@ const Main = () => {
 
   const mealPenalties = () => {
     let firstPeriodStart = DateTime.fromISO(inTime)
-    firstPenalties = 0
-    secondPenalties = 0
+    let firstPenalties = 0
+    let secondPenalties = 0
+    let firstPenaltiesTime
+    //let firstPenaltiesEnd
     if (ndbTime && (ndbTime !== '')) {
       firstPeriodStart = DateTime.fromISO(ndbTime).plus({minutes: 15})
     }
-    if (DateTime.fromISO(firstMeal) > firstPeriodStart.plus({hours: 6})) {
-      let firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
-      firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
+    if (firstMeal && (firstMeal !== '')){
+      if (DateTime.fromISO(firstMeal) > firstPeriodStart.plus({hours: 6})) {
+        firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
+      }
+    } else {
+      if (outTime && (outTime !== '')) {
+        if (DateTime.fromISO(outTime) > firstPeriodStart.plus({hours: 6})) {
+          firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
+        }
+      }
+    }
+    firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
+    if (firstMeal && (firstMeal !== '')) {
 
     }
+    
 
-  }
+    }
 
 //console.log(hoursMinusMeals())
 console.log(totalBumps())
