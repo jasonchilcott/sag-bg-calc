@@ -5,7 +5,7 @@ import Summary from "./Summary.js";
 
 const baseRateObj = { background: 182, specialAbility: 192, standIn: 214 };
 const baseBumpsArr = [19, 14, 14, 0]
-const propsArr = [5.5, 12, 5.5, 23, 12, 5.5]
+const proopsArr = [5.5, 12, 5.5, 23, 12, 5.5]
 
 
 const Main = () => {
@@ -24,7 +24,7 @@ const Main = () => {
   const [secondLength, setSecondLength] = useState('')
   const [changes, setChanges] = useState(0)
   const [formalUni, setFormalUni] = useState([false, false])
-  const [props, setProps] = useState([false, false, false, false, false, false])
+  const [proops, setProops] = useState([false, false, false, false, false, false])
   //const [vehicles, setVehicles] = useState([false, false, false, false, false, false, false])
   const [miscBump, setMiscBump] = useState(0)
 
@@ -256,10 +256,10 @@ const Main = () => {
     return "0"
   }
 
-  const propsHandler = (e) => {
-    let newPropsArr = [...props]
-    newPropsArr[e.target.value] = !newPropsArr[e.target.value]
-    setProps(newPropsArr)
+  const proopsHandler = (e) => {
+    let newProopsArr = [...proops]
+    newProopsArr[e.target.value] = !newProopsArr[e.target.value]
+    setProops(newProopsArr)
   }
 
   const totalBumps = () => {
@@ -270,22 +270,23 @@ const Main = () => {
     if (formalUni[1]) {
       wardrobe += 18
     }
-    if (changes <= 1) {
+    if (changes >= 1) {
       wardrobe += 9
       let addtl = (changes - 1) * 6.25
       wardrobe += addtl
     }
-    let newPropsArr = propsArr.map((prop, i) => {
-      if (props[i] === false) {
+    let newProopsArr = proopsArr.map((prop, i) => {
+      if (proops[i] === false) {
         return 0
       } else {
         return prop
       }
     })
-    let totalProps = newPropsArr.reduce(
-      (a, b) => a + b )
+    let totalProops = newProopsArr.reduce(
+      (a, b) => a + b 
+      )
 
-      return (wardrobe + totalProps + miscBump)
+    return (wardrobe + totalProops + miscBump)
   }
 
 console.log(hoursMinusMeals())
@@ -407,29 +408,29 @@ console.log(totalBumps())
             <input type="checkbox" id="uniform" name="uniform" value="1" checked={formalUni[1]} onChange={formalUniHandler}/>
             <label htmlFor="uniform">Uniform</label>
           </div>
-          <h3>Props</h3>
+          <h3>Proops</h3>
           <div>
-            <input type="checkbox" id="camera" name="camera" value="0" checked={props[0]} onChange={propsHandler}/>
+            <input type="checkbox" id="camera" name="camera" value="0" checked={proops[0]} onChange={proopsHandler}/>
             <label htmlFor="camera">Camera</label>
           </div>
           <div>
-            <input type="checkbox" id="golf-clubs" name="golf-clubs" value="1" checked={props[1]} onChange={propsHandler}/>
+            <input type="checkbox" id="golf-clubs" name="golf-clubs" value="1" checked={proops[1]} onChange={proopsHandler}/>
             <label htmlFor="golf-clubs">Golf Club(s)</label>
           </div>
           <div>
-            <input type="checkbox" id="luggage" name="luggage" value="2" checked={props[2]} onChange={propsHandler}/>
+            <input type="checkbox" id="luggage" name="luggage" value="2" checked={proops[2]} onChange={proopsHandler}/>
             <label htmlFor="luggage">Luggage</label>
           </div>
           <div>
-            <input type="checkbox" id="pet" name="pet" value="3" checked={props[3]} onChange={propsHandler}/>
+            <input type="checkbox" id="pet" name="pet" value="3" checked={proops[3]} onChange={proopsHandler}/>
             <label htmlFor="pet">Pet</label>
           </div>
           <div>
-            <input type="checkbox" id="skis" name="skis" value="4" checked={props[4]} onChange={propsHandler}/>
+            <input type="checkbox" id="skis" name="skis" value="4" checked={proops[4]} onChange={proopsHandler}/>
             <label htmlFor="skis">Skis</label>
           </div>
           <div>
-            <input type="checkbox" id="tennis-racquet" name="tennis-racquet" value="5" checked={props[5]} onChange={propsHandler}/>
+            <input type="checkbox" id="tennis-racquet" name="tennis-racquet" value="5" checked={proops[5]} onChange={proopsHandler}/>
             <label htmlFor="tennis-racquet">Tennis Racquet</label>
           </div>
           {/* <h3>Vehicles</h3>
