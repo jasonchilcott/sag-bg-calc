@@ -285,6 +285,21 @@ const Main = () => {
     return (wardrobe + totalProops + parseInt(miscBump))
   }
 
+  const mealPenalties = () => {
+    let firstPeriodStart = DateTime.fromISO(inTime)
+    firstPenalties = 0
+    secondPenalties = 0
+    if (ndbTime && (ndbTime !== '')) {
+      firstPeriodStart = DateTime.fromISO(ndbTime).plus({minutes: 15})
+    }
+    if (DateTime.fromISO(firstMeal) > firstPeriodStart.plus({hours: 6})) {
+      let firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
+      firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
+
+    }
+
+  }
+
 //console.log(hoursMinusMeals())
 console.log(totalBumps())
 
