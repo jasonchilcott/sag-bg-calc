@@ -125,6 +125,7 @@ const Main = () => {
   }; 
 
   const otherBaseBumpField = () => {
+    //adds field for other base rate bumps if other is checked
     if (baseBumps[3]) {
       return (
         <>
@@ -150,6 +151,7 @@ const Main = () => {
   }
 
   const maxNdb = () => {
+    //the non-deductible breakfast, if one is offered, must be within 2 hours of the in time
     const start = DateTime.fromISO(inTime)
     return start.plus({ hours: 2 }).toLocaleString(DateTime.TIME_24_SIMPLE)
   }
@@ -229,31 +231,25 @@ const Main = () => {
 
   const rawHours = () => {
     let start = DateTime.fromISO(inTime)
-    console.log(start)
     let end = DateTime.fromISO(outTime)
-    console.log(start)
-    console.log(end.diff(start).as('hours'))
     return end.diff(start)
 
   }
 
   const hoursMinusMeals = () => {
+    let combined = Duration.fromMillis(0)
     if ((firstLength !== "" )) {
-      let combined = "0"
       let first = Duration.fromISOTime(firstLength)
-      console.log(first)
       if ((secondLength !== "" )) {
         let second = Duration.fromISOTime(secondLength)
-        console.log(second)
         combined = first.plus(second)
-    } else {
-      combined = first
+      } else {
+        combined = first
+      }
+    console.log(combined)
     }
-      console.log(combined)
-      return ( rawHours().as('hours') )
-      
-    }
-    return "0"
+  return ( rawHours().minus(combined) )
+  
   }
 
   const proopsHandler = (e) => {
@@ -289,7 +285,7 @@ const Main = () => {
     return (wardrobe + totalProops + parseInt(miscBump))
   }
 
-console.log(hoursMinusMeals())
+//console.log(hoursMinusMeals())
 console.log(totalBumps())
 
 
@@ -474,7 +470,7 @@ console.log(totalBumps())
         <h4>1st length: {firstLength}</h4>
         <h4>second meal: {secondMeal}</h4>
         <h4>2nd length: {secondLength}</h4>
-        <h4>hours minus meals: {Math.ceil(hoursMinusMeals() * 10) / 10}</h4>
+        <h4>hours minus meals: {Math.ceil(hoursMinusMeals().as('hours') * 10) / 10}</h4>
         {/* <h4>raw hours: {rawHours()}</h4> */}
         
       </form>
