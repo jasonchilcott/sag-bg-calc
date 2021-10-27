@@ -22,10 +22,11 @@ const Main = () => {
   const [firstLength, setFirstLength] = useState('')
   const [secondMeal, setSecondMeal] = useState('')
   const [secondLength, setSecondLength] = useState('')
-  const [changes, setChanges] = 0
+  const [changes, setChanges] = useState(0)
   const [formalUni, setFormalUni] = useState([false, false])
   const [props, setProps] = useState([false, false, false, false, false, false])
   //const [vehicles, setVehicles] = useState([false, false, false, false, false, false, false])
+  const [miscBump, setMiscBump] = useState(0)
 
   const roleHandler = (e) => {
     setRole(e.target.value);
@@ -36,13 +37,23 @@ const Main = () => {
   };
 
   const baseBumpsHandler = (e) => {
-    let newBumpsArr = [...baseBumps]
-    newBumpsArr[e.target.value] = !newBumpsArr[e.target.value]
-    setBaseBumps(newBumpsArr)
+    let newBaseBumpsArr = [...baseBumps]
+    newBaseBumpsArr[e.target.value] = !newBaseBumpsArr[e.target.value]
+    setBaseBumps(newBaseBumpsArr)
+  };
+
+  const formalUniHandler = (e) => {
+    let newFormalUniArr = [...formalUni]
+    newFormalUniArr[e.target.value] = !newFormalUniArr[e.target.value]
+    setFormalUni(newFormalUniArr)
   };
 
   const otherBaseBumpHandler = (e) => {
     setOtherBaseBump(e.target.value);
+  };
+
+  const changesHandler = (e) => {
+    setChanges(e.target.value);
   };
 
   //const capitalize = (str) => { str.charAt(0).toUpperCase() + str.slice(1) }
@@ -74,18 +85,18 @@ const Main = () => {
     }
   };
   const totalBaseBumps = () => {
-    let newBumpsArr = [...baseBumpsArr]
+    let newBaseBumpsArr = [...baseBumpsArr]
     if (baseBumps[3]) {
-      newBumpsArr[3] = otherBaseBump
+      newBaseBumpsArr[3] = otherBaseBump
     } 
-    newBumpsArr = newBumpsArr.map((bump, i) => {
+    newBaseBumpsArr = newBaseBumpsArr.map((bump, i) => {
       if (baseBumps[i] === false) {
         return 0
       } else {
         return bump
       }
     })
-    return newBumpsArr
+    return newBaseBumpsArr
   }
 
   const totalBaseRate = () => {
@@ -245,7 +256,40 @@ const Main = () => {
     return "0"
   }
 
+  const propsHandler = (e) => {
+    let newPropsArr = [...props]
+    newPropsArr[e.target.value] = !newPropsArr[e.target.value]
+    setProps(newPropsArr)
+  }
+
+  const totalBumps = () => {
+    let wardrobe = 0
+    if (formalUni[0]) {
+      wardrobe += 36
+    }
+    if (formalUni[1]) {
+      wardrobe += 18
+    }
+    if (changes <= 1) {
+      wardrobe += 9
+      let addtl = (changes - 1) * 6.25
+      wardrobe += addtl
+    }
+    let newPropsArr = propsArr.map((prop, i) => {
+      if (props[i] === false) {
+        return 0
+      } else {
+        return prop
+      }
+    })
+    let totalProps = newPropsArr.reduce(
+      (a, b) => a + b )
+
+      return (wardrobe + totalProps + miscBump)
+  }
+
 console.log(hoursMinusMeals())
+console.log(totalBumps())
 
 
   return (
@@ -353,39 +397,39 @@ console.log(hoursMinusMeals())
         <h2>Other Bumps</h2>
         <div>
           <label htmlFor="changes">Wardrobe changes:</label>
-          <input type="number" id="changes" name="changes" min="0" max="10" />
+          <input type="number" id="changes" name="changes" min="0" max="10" value={changes} onChange={changesHandler}/>
           <h3>Formalwear/Uniform</h3>
           <div>
-            <input type="checkbox" id="formalwear" name="formalwear" />
+            <input type="checkbox" id="formalwear" name="formalwear" value="0" checked={formalUni[0]} onChange={formalUniHandler}/>
             <label htmlFor="formalwear">Formalwear</label>
           </div>
           <div>
-            <input type="checkbox" id="uniform" name="uniform" />
+            <input type="checkbox" id="uniform" name="uniform" value="1" checked={formalUni[1]} onChange={formalUniHandler}/>
             <label htmlFor="uniform">Uniform</label>
           </div>
           <h3>Props</h3>
           <div>
-            <input type="checkbox" id="camera" name="camera" />
+            <input type="checkbox" id="camera" name="camera" value="0" checked={props[0]} onChange={propsHandler}/>
             <label htmlFor="camera">Camera</label>
           </div>
           <div>
-            <input type="checkbox" id="golf-clubs" name="golf-clubs" />
+            <input type="checkbox" id="golf-clubs" name="golf-clubs" value="1" checked={props[1]} onChange={propsHandler}/>
             <label htmlFor="golf-clubs">Golf Club(s)</label>
           </div>
           <div>
-            <input type="checkbox" id="luggage" name="luggage" />
+            <input type="checkbox" id="luggage" name="luggage" value="2" checked={props[2]} onChange={propsHandler}/>
             <label htmlFor="luggage">Luggage</label>
           </div>
           <div>
-            <input type="checkbox" id="pet" name="pet" />
+            <input type="checkbox" id="pet" name="pet" value="3" checked={props[3]} onChange={propsHandler}/>
             <label htmlFor="pet">Pet</label>
           </div>
           <div>
-            <input type="checkbox" id="skis" name="skis" />
+            <input type="checkbox" id="skis" name="skis" value="4" checked={props[4]} onChange={propsHandler}/>
             <label htmlFor="skis">Skis</label>
           </div>
           <div>
-            <input type="checkbox" id="tennis-racquet" name="tennis-racquet" />
+            <input type="checkbox" id="tennis-racquet" name="tennis-racquet" value="5" checked={props[5]} onChange={propsHandler}/>
             <label htmlFor="tennis-racquet">Tennis Racquet</label>
           </div>
           {/* <h3>Vehicles</h3>
@@ -415,7 +459,7 @@ console.log(hoursMinusMeals())
           </div> */}
           <h3>Misc.</h3>
           <label htmlFor="misc">Misc. Bump:</label>
-          $<input type="number" id="misc" name="misc" min="0" />
+          $<input type="number" id="misc" name="misc" min="0" value={miscBump} onChange={(e) => setMiscBump(e.target.value)}/>
         </div>
         <h4>role: {role}</h4>
         <h4>base Rate: {baseRate()}</h4>
