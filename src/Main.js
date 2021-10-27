@@ -286,11 +286,12 @@ const Main = () => {
   }
 
   const mealPenalties = () => {
+    //this obviously can be improved, refactored
     let firstPeriodStart = DateTime.fromISO(inTime)
     let firstPenalties = 0
     let secondPenalties = 0
     let firstPenaltiesTime
-    //let firstPenaltiesEnd
+    // maybe have  firstPenaltiesEnd, secondPenaltiesEnd
     if (ndbTime && (ndbTime !== '')) {
       firstPeriodStart = DateTime.fromISO(ndbTime).plus({minutes: 15})
     }
@@ -304,17 +305,32 @@ const Main = () => {
           firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
         }
       }
+      firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
     }
-    firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
-    if (firstMeal && (firstMeal !== '')) {
 
+    if (firstMeal && (firstMeal !== '')) {
+      let secondPeriodStart = DateTime.fromISO(firstMeal).plus(Duration.fromISOTime(firstLength))
+      if (secondMeal && (secondMeal !== '')){
+        if (DateTime.fromISO(secondMeal) > secondPeriodStart.plus({hours: 6})) {
+          secondPenaltiesTime = DateTime.fromISO(secondMeal).diff(secondPeriodStart.plus({hours: 6}))
+        }
+      } else {
+        if (outTime && (outTime !== '')) {
+          if (DateTime.fromISO(outTime) > secondPeriodStart.plus({hours: 6})) {
+            secondPenaltiesTime = DateTime.fromISO(secondMeal).diff(secondPeriodStart.plus({hours: 6}))
+          }
+        }
+      }
+      secondPenalties = Math.ceil(secondPenaltiesTime.as('minutes')/15)
     }
     
-
-    }
+    return {L: firstPenalties, D: secondPenalties}
+  }
 
 //console.log(hoursMinusMeals())
 console.log(totalBumps())
+console.log(mealPenalties())
+
 
 
   return (
