@@ -286,7 +286,7 @@ const Main = () => {
       (a, b) => a + b 
       )
 
-    return (wardrobe + totalProops + miscBump)
+    return (wardrobe + totalProops + parseInt(miscBump))
   }
 
 console.log(hoursMinusMeals())
