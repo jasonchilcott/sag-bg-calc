@@ -173,7 +173,7 @@ const Main = () => {
   };
 
   const mealBreaksField = () => {
-    const firstMeal = () => {
+    const firstMealField = () => {
       return(
       <>
       <label>1st Meal</label>
@@ -197,7 +197,7 @@ const Main = () => {
           </>)
     }
 
-    const secondMeal = () => {
+    const secondMealField = () => {
       return(
       <>
       <label>2nd Meal</label>
@@ -217,7 +217,7 @@ const Main = () => {
       return firstMeal()
     }
     if (parseInt(mealBreaks) === 2) {
-      return <>{firstMeal()} {secondMeal()}</>
+      return <>{firstMealField()} {secondMealField()}</>
     }
   }
 
@@ -290,39 +290,36 @@ const Main = () => {
     let firstPeriodStart = DateTime.fromISO(inTime)
     let firstPenalties = 0
     let secondPenalties = 0
-    let firstPenaltiesTime
+    let firstPenaltiesTime = Duration.fromMillis(0)
+    let secondPenaltiesTime = Duration.fromMillis(0)
     // maybe have  firstPenaltiesEnd, secondPenaltiesEnd
     if (ndbTime && (ndbTime !== '')) {
       firstPeriodStart = DateTime.fromISO(ndbTime).plus({minutes: 15})
     }
-    if (firstMeal && (firstMeal !== '')){
-      if (DateTime.fromISO(firstMeal) > firstPeriodStart.plus({hours: 6})) {
-        firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
-      }
-    } else {
-      if (outTime && (outTime !== '')) {
-        if (DateTime.fromISO(outTime) > firstPeriodStart.plus({hours: 6})) {
-          firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
-        }
-      }
-      firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
-    }
-
-    if (firstMeal && (firstMeal !== '')) {
+    if ((firstLength && (firstLength !== '')) && (firstMeal && (firstMeal !== ''))){
       let secondPeriodStart = DateTime.fromISO(firstMeal).plus(Duration.fromISOTime(firstLength))
-      if (secondMeal && (secondMeal !== '')){
+      if ((secondLength && (secondLength !== '')) && (secondMeal && (secondMeal !== ''))){
         if (DateTime.fromISO(secondMeal) > secondPeriodStart.plus({hours: 6})) {
           secondPenaltiesTime = DateTime.fromISO(secondMeal).diff(secondPeriodStart.plus({hours: 6}))
         }
       } else {
         if (outTime && (outTime !== '')) {
           if (DateTime.fromISO(outTime) > secondPeriodStart.plus({hours: 6})) {
-            secondPenaltiesTime = DateTime.fromISO(secondMeal).diff(secondPeriodStart.plus({hours: 6}))
+            secondPenaltiesTime = DateTime.fromISO(outTime).diff(secondPeriodStart.plus({hours: 6}))
           }
         }
       }
       secondPenalties = Math.ceil(secondPenaltiesTime.as('minutes')/15)
-    }
+
+      if (DateTime.fromISO(firstMeal) > firstPeriodStart.plus({hours: 6})) {
+        firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(firstPeriodStart.plus({hours: 6}))
+      }
+    } else if (outTime && (outTime !== '')) {
+        if (DateTime.fromISO(outTime) > firstPeriodStart.plus({hours: 6})) {
+          firstPenaltiesTime = DateTime.fromISO(outTime).diff(firstPeriodStart.plus({hours: 6}))
+        }
+      }
+    firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
     
     return {L: firstPenalties, D: secondPenalties}
   }
