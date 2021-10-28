@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DateTime, Duration  } from "luxon";
+import { DateTime, Duration, Interval  } from "luxon";
 import Mark from "./Mark.js";
 import Summary from "./Summary.js";
 
@@ -322,6 +322,42 @@ const Main = () => {
     firstPenalties = Math.ceil(firstPenaltiesTime.as('minutes')/15)
     
     return {L: firstPenalties, D: secondPenalties}
+  }
+
+  const mealPenaltiesPay = (penaltyHours) => {
+    let pay = 0
+    if ( penaltyHours > 0 ) {
+      pay += 7.5
+      if ( penaltyHours > 1 ) {
+        pay += 10
+        if ( penaltyHours > 2 ) {
+          pay += ((penaltyHours - 2) * 12.5)
+        }
+      }
+    }
+    return pay
+  }
+
+  const timesToIntervals = () => {
+    let a = DateTime.fromISO(inTime)
+    let b = DateTime.fromISO(outTime)
+    let wholeDay = Interval.fromDateTimes( a, b )
+    let goldenTime
+    if (wholeDay.toDuration > Duration.fromISOTime('16:00')) {
+      let goldSplit = wholeDay.splitAt(a.plus(Duration.fromISOTime('16:00')))
+      goldenTime = goldSplit[1]
+      wholeDay = goldSplit[0]
+    }
+    let meals = []
+    if ((firstLength && (firstLength !== '')) && (firstMeal && (firstMeal !== ''))) {
+      let first = Interval.after( DateTime.fromISO(firstMeal), Duration.fromISOTime(firstLength))
+      meals.push(first)
+      if ((secondLength && (secondLength !== '')) && (secondMeal && (secondMeal !== ''))) {
+        let second = Interval.after( DateTime.fromISO(secondMeal), Duration.fromISOTime(secondLength))
+        meals.push(second)
+      }
+    } 
+    let nonMealHours = wholeDay.difference(meals)
   }
 
 //console.log(hoursMinusMeals())
