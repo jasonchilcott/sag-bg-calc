@@ -84,6 +84,7 @@ const Main = () => {
       return baseRateObj[role];
     }
   };
+
   const totalBaseBumps = () => {
     let newBaseBumpsArr = [...baseBumpsArr]
     if (baseBumps[3]) {
@@ -362,26 +363,39 @@ const Main = () => {
       goldenTime = goldSplit[1]
       wholeDay = goldSplit[0]
     }
-    let meals = []
-    if ((firstLength && (firstLength !== '')) && (firstMeal && (firstMeal !== ''))) {
-      let first = Interval.after( DateTime.fromISO(firstMeal), Duration.fromISOTime(firstLength))
-      meals.push(first)
-      if ((secondLength && (secondLength !== '')) && (secondMeal && (secondMeal !== ''))) {
-        let second = Interval.after( DateTime.fromISO(secondMeal), Duration.fromISOTime(secondLength))
-        meals.push(second)
-      }
-    } 
-    let nonMealHours = wholeDay.difference(meals)
+    if ((wholeDay.toDuration).minus(Duration.fromISOTime(firstLength).plus(Duration.fromISOTime(secondLength))) > Duration.fromISOTime('08:00')) {
+      let meals = []
+      if ((firstLength && (firstLength !== '')) && (firstMeal && (firstMeal !== ''))) {
+        let first = Interval.after( DateTime.fromISO(firstMeal), Duration.fromISOTime(firstLength))
+        meals.push(first)
+        if ((secondLength && (secondLength !== '')) && (secondMeal && (secondMeal !== ''))) {
+          let second = Interval.after( DateTime.fromISO(secondMeal), Duration.fromISOTime(secondLength))
+          meals.push(second)
+        }
+      } 
+      let nonMealHours = wholeDay.difference(meals)
 
-    let regHalf
-    let halfDouble
+      let regHalf = []
+      let half = []
+      let reg = []
 
-    if (nonMealHours[0].toDuration > Duration.fromISOTime('08:00')) {
-      regHalf = [...nonMealHours[0].splitAt(nonMealHours[0].start.plus(Duration.fromISOTime('08:00')))]
-    } else if (((nonMealHours[0].toDuration).plus(nonMealHours[1].toDuration)) > Duration.fromISOTime('08:00')) {
-      split = DateTime. //x where (duration of nonMealHOurs[1] start to x) + (duration of nomnmealhours[0]) = 8
-      regHalf = [...nonMealHours[1].splitAt(DateTime)]
-
+      if (nonMealHours[0].toDuration > Duration.fromISOTime('08:00')) {
+        regHalf = [...nonMealHours[0].splitAt(nonMealHours[0].start.plus(Duration.fromISOTime('08:00')))]
+        reg = [...regHalf[0]]
+        half = regHalf[1]
+      } else if (((nonMealHours[0].toDuration).plus(nonMealHours[1].toDuration)) > Duration.fromISOTime('08:00')) {
+        split = nonMealHours[1].start.plus(Duration.fromISOTime('08:00').minus(nonMealHours[0].toDuration))
+        regHalf = [...nonMealHours[1].splitAt(split)]
+        reg = [...nonMealHours[0], ...regHalf[0]]
+        half =  [...regHalf[1]]
+      } else if (((nonMealHours[0].toDuration).plus(nonMealHours[1].toDuration).plus(nonMealHours[2].toDuration)) > Duration.fromISOTime('08:00')) {
+        split = nonMealHours[2].start.plus(Duration.fromISOTime('08:00').minus(nonMealHours[0].toDuration.plus(nonMealHours[1].toDuration)))
+        regHalf = [...nonMealHours[1].splitAt(split)]
+        reg = [...nonMealHours[0], ...nonMealHours[1], regHalf[0]]
+        half =  [...regHalf[1]]
+      } 
+      let double = []
+      let halfDouble = []
     }
   }
 
