@@ -338,6 +338,20 @@ const Main = () => {
     return pay
   }
 
+  const adjustDay = (a, b) => {
+    if (a > b) {
+      b = b.plus(Duration.fromObject({days: 1}))
+    }
+    return b
+  }
+
+  class WorkTime extends Interval {
+    constructor(ot, night) {
+      this.ot = ot;
+      this.night = night;
+    }
+  }
+
   const timesToIntervals = () => {
     let a = DateTime.fromISO(inTime)
     let b = DateTime.fromISO(outTime)
@@ -358,6 +372,17 @@ const Main = () => {
       }
     } 
     let nonMealHours = wholeDay.difference(meals)
+
+    let regHalf
+    let halfDouble
+
+    if (nonMealHours[0].toDuration > Duration.fromISOTime('08:00')) {
+      regHalf = [...nonMealHours[0].splitAt(nonMealHours[0].start.plus(Duration.fromISOTime('08:00')))]
+    } else if (((nonMealHours[0].toDuration).plus(nonMealHours[1].toDuration)) > Duration.fromISOTime('08:00')) {
+      split = DateTime. //x where (duration of nonMealHOurs[1] start to x) + (duration of nomnmealhours[0]) = 8
+      regHalf = [...nonMealHours[1].splitAt(DateTime)]
+
+    }
   }
 
 //console.log(hoursMinusMeals())
