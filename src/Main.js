@@ -20,9 +20,9 @@ const Main = () => {
   const [ndbTime, setNdbTime] = useState("");
   const [mealBreaks, setMealBreaks] = useState(0);
   const [firstMeal, setFirstMeal] = useState("");
-  const [firstLength, setFirstLength] = useState("");
+  const [firstLength, setFirstLength] = useState("00:00");
   const [secondMeal, setSecondMeal] = useState("");
-  const [secondLength, setSecondLength] = useState("");
+  const [secondLength, setSecondLength] = useState("00:00");
   const [changes, setChanges] = useState(0);
   const [formalUni, setFormalUni] = useState([false, false]);
   const [proops, setProops] = useState([ false, false, false, false, false, false ]);
@@ -255,7 +255,7 @@ const Main = () => {
     };
 
     if (parseInt(mealBreaks) === 1) {
-      return firstMeal();
+      return firstMealField();
     }
     if (parseInt(mealBreaks) === 2) {
       return (
@@ -276,7 +276,7 @@ const Main = () => {
 
   const rawHours = () => {
     let start = DateTime.fromISO(inTime);
-    let end = DateTime.fromISO(outTime);
+    let end = (DateTime.fromISO(outTime));
     return end.diff(start);
   };
 
@@ -335,7 +335,7 @@ const Main = () => {
     let secondPenalties = 0;
     let firstPenaltiesTime = Duration.fromMillis(0);
     let secondPenaltiesTime = Duration.fromMillis(0);
-    // maybe have  firstPenaltiesEnd, secondPenaltiesEnd
+    // maybe have  firstPenaltiesEnd, secondPenaltiesEnd?
     //a non-deductible breakfast (NDB) is 15 minutes long
     // if there is an NBD, meal penalties will start accruing
     //six hours after the end of the NDB, one every half hour or fraction
@@ -417,18 +417,20 @@ const Main = () => {
     return b;
   };
 
-  class WorkTime extends Interval {
-    //i wrote this class thinking maybe i can add OT and night premium values
-    //to interval instances but i think i did it wrong
-    constructor(ot, night) {
-      this.ot = ot;
-      this.night = night;
-    }
-  }
+  // class WorkTime extends Interval {
+  //   //i wrote this class thinking maybe i can add OT and night premium values
+  //   //to interval instances but i think i did it wrong
+  //   constructor(ot, night) {
+  //     this.ot = ot;
+  //     this.night = night;
+  //   }
+  // }
 
   const timesToIntervals = () => {
+  if ((inTime && inTime !== "") && (outTime && outTime !== "")){
     let a = DateTime.fromISO(inTime);
     let b = DateTime.fromISO(outTime);
+    b = adjustDay(a, b)
     let wholeDay = Interval.fromDateTimes(a, b);
     let goldenTime;
     //golden time is any hour or fraction of an hour after 16 hours, including meal time
@@ -442,12 +444,12 @@ const Main = () => {
     //multipliers, we cannot simply subtract meal time from total hours to find
     //the work hours, so this bit breaks the day up by creating intervals before/between/after meal breaks
     //the first line checks to see if the day actually incudes any OT
+    let wDDur = wholeDay.toDuration()
+    let totalBreakDur = Duration.fromISOTime(firstLength).plus(Duration.fromISOTime(secondLength))
+    console.log(wDDur)
+    console.log(totalBreakDur)
     if (
-      wholeDay.toDuration.minus(
-        Duration.fromISOTime(firstLength).plus(
-          Duration.fromISOTime(secondLength)
-        )
-      ) > Duration.fromISOTime("08:00")
+      wDDur.minus(totalBreakDur) > Duration.fromISOTime("08:00")
     ) {
       let meals = [];
       if (firstLength && firstLength !== "" && firstMeal && firstMeal !== "") {
@@ -477,56 +479,69 @@ const Main = () => {
 
       //i'm not very confident this is the best way to do this.
 
+      let reg = [];
       let regHalf = [];
       let half = [];
-      let reg = [];
+      let double = []
+      //let halfDouble = []
+      let split
 
-      if (nonMealHours[0].toDuration > Duration.fromISOTime("08:00")) {
+      //if the first interval is more than 8 hours long (no meal break in the first 8hours)
+      if (nonMealHours[0].toDuration() > Duration.fromISOTime("08:00")) {
         regHalf = [
           ...nonMealHours[0].splitAt(
             nonMealHours[0].start.plus(Duration.fromISOTime("08:00"))
           ),
         ];
-        reg = [...regHalf[0]];
+        reg = [regHalf[0]];
         half = regHalf[1];
       } else if (
-        nonMealHours[0].toDuration.plus(nonMealHours[1].toDuration) >
+        //if the time duration of the time before first meal and the time after first meal > 8 hours
+        nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration()) >
         Duration.fromISOTime("08:00")
       ) {
         split = nonMealHours[1].start.plus(
-          Duration.fromISOTime("08:00").minus(nonMealHours[0].toDuration)
+          Duration.fromISOTime("08:00").minus(nonMealHours[0].toDuration())
         );
         regHalf = [...nonMealHours[1].splitAt(split)];
         reg = [...nonMealHours[0], ...regHalf[0]];
         half = [...regHalf[1]];
       } else if (
-        nonMealHours[0].toDuration
-          .plus(nonMealHours[1].toDuration)
-          .plus(nonMealHours[2].toDuration) > Duration.fromISOTime("08:00")
+        //if the time duration of the time before first meal and the duration between first and second meal and the time after 2nd meal > 8 hours
+        nonMealHours[0].toDuration()
+          .plus(nonMealHours[1].toDuration())
+          .plus(nonMealHours[2].toDuration()) > Duration.fromISOTime("08:00")
       ) {
         split = nonMealHours[2].start.plus(
           Duration.fromISOTime("08:00").minus(
-            nonMealHours[0].toDuration.plus(nonMealHours[1].toDuration)
+            nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration())
           )
         );
         regHalf = [...nonMealHours[1].splitAt(split)];
         reg = [...nonMealHours[0], ...nonMealHours[1], regHalf[0]];
         half = [...regHalf[1]];
       }
+
+      return [[reg], [half], [double], [goldenTime]]
+
+
       // let double = []
       // let halfDouble = []
 
-      // if (half[0].toDuration > Duration.fromISOTime('02:00')) {
+      // if (half[0].toDuration() > Duration.fromISOTime('02:00')) {
       //   halfDouble = [...half[0].splitAt(half[0].start.plus(Duration.fromISOTime('02:00')))]
       //   half.push(halfDouble[0])
       //   double = halfDouble[1]
       // }
+      }
     }
   };
 
   //console.log(hoursMinusMeals())
   console.log(totalBumps());
   console.log(mealPenalties());
+  console.log(mealPenaltiesPay(mealPenalties()))
+  console.log(timesToIntervals())
 
   return (
     <div className="main">
@@ -853,8 +868,7 @@ const Main = () => {
         <h4>second meal: {secondMeal}</h4>
         <h4>2nd length: {secondLength}</h4>
         <h4>
-          hours minus meals:{" "}
-          {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
+          hours minus meals: {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
         </h4>
       </form>
       <Mark />
