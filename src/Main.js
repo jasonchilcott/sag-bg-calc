@@ -145,7 +145,7 @@ const Main = () => {
 
   const ndbHandler = () => {
     setNdb(!ndb);
-    if (!ndb) {
+    if (ndb === false) {
       setNdbTime("");
     }
   };
@@ -178,6 +178,14 @@ const Main = () => {
 
   const breaksHandler = (e) => {
     setMealBreaks(e.target.value);
+    if (parseInt(mealBreaks) > 2) {
+      setSecondLength("00:00");
+      setSecondMeal("")
+    }
+    if (parseInt(mealBreaks) > 1) {
+      setFirstLength("00:00");
+      setFirstMeal("")
+    }
   };
 
   const mealBreaksField = () => {
@@ -277,6 +285,7 @@ const Main = () => {
   const rawHours = () => {
     let start = DateTime.fromISO(inTime);
     let end = (DateTime.fromISO(outTime));
+    end = adjustDay(start, end)
     return end.diff(start);
   };
 
@@ -751,7 +760,7 @@ const Main = () => {
             />
             <label htmlFor="uniform">Uniform</label>
           </div>
-          <h3>Proops</h3>
+          <h3>Props</h3>
           <div>
             <input
               type="checkbox"
