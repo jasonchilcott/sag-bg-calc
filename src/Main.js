@@ -152,8 +152,10 @@ const Main = () => {
 
   const maxNdb = () => {
     //the non-deductible breakfast, if one is offered, must be within 2 hours of the in time
-    const start = DateTime.fromISO(inTime);
-    return start.plus({ hours: 2 }).toLocaleString(DateTime.TIME_24_SIMPLE);
+    if (inTime !== "") {
+      const start = DateTime.fromISO(inTime);
+      return start.plus({ hours: 2 }).toLocaleString(DateTime.TIME_24_SIMPLE);
+    }
   };
 
   const ndbField = () => {
@@ -373,7 +375,7 @@ const Main = () => {
           secondPenaltiesTime = DateTime.fromISO(secondMeal).diff(
             secondPeriodStart.plus({ hours: 6 })
           )
-          secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), secondPenaltiesTime)
+          
         }
       } else {
         if (outTime !== "") {
@@ -383,27 +385,27 @@ const Main = () => {
             secondPenaltiesTime = DateTime.fromISO(outTime).diff(
               secondPeriodStart.plus({ hours: 6 })
             );
-            secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), secondPenaltiesTime)
+            
           }
         }
       }
-      secondPenalties = Math.ceil(secondPenaltiesTime.as("minutes") / 15);
+      secondPenalties = Math.ceil(secondPenaltiesTime.as("minutes") / 30);
 
       if (adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(firstMeal))  > firstPeriodStart.plus({ hours: 6 })) {
         firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(
           firstPeriodStart.plus({ hours: 6 })
         );
-        firstPenaltiesTime = adjustDay(DateTime.fromISO(inTime), firstPenaltiesTime)
+        
       }
     } else if (outTime && outTime !== "") {
       if (adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)) > firstPeriodStart.plus({ hours: 6 })) {
         firstPenaltiesTime = DateTime.fromISO(outTime).diff(
           firstPeriodStart.plus({ hours: 6 })
         );
-        firstPenaltiesTime = adjustDay(DateTime.fromISO(inTime), firstPenaltiesTime)
+        
       }
     }
-    firstPenalties = Math.ceil(firstPenaltiesTime.as("minutes") / 15);
+    firstPenalties = Math.ceil(firstPenaltiesTime.as("minutes") / 30);
 
     return { L: firstPenalties, D: secondPenalties };
   };
@@ -886,8 +888,8 @@ const Main = () => {
         <h4>
           hours minus meals: {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
         </h4>
-        <h4>lunch penalties: {mealPenalties().L}</h4>
-        <h4>dinner penalties: {mealPenalties().D}</h4>
+        <h4>lunch penalties: {mealPenalties().L}, $ {mealPenaltiesPay(mealPenalties().L)}</h4>
+        <h4>dinner penalties: {mealPenalties().D}, $ {mealPenaltiesPay(mealPenalties().D)}</h4>
       </form>
       <Mark />
       <Summary />
