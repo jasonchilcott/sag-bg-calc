@@ -369,10 +369,11 @@ const Main = () => {
         secondLength !== "00:00" &&
         secondMeal !== ""
       ) {
+        secondPeriodStart = adjustDay(DateTime.fromISO(inTime), secondPeriodStart)
         if (
           adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(secondMeal)) > secondPeriodStart.plus({ hours: 6 })
         ) {
-          secondPenaltiesTime = DateTime.fromISO(secondMeal).diff(
+          secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(secondMeal)).diff(
             secondPeriodStart.plus({ hours: 6 })
           )
           
@@ -382,7 +383,7 @@ const Main = () => {
           if (
             adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)) > secondPeriodStart.plus({ hours: 6 })
           ) {
-            secondPenaltiesTime = DateTime.fromISO(outTime).diff(
+            secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)).diff(
               secondPeriodStart.plus({ hours: 6 })
             );
             
@@ -392,14 +393,15 @@ const Main = () => {
       secondPenalties = Math.ceil(secondPenaltiesTime.as("minutes") / 30);
 
       if (adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(firstMeal))  > firstPeriodStart.plus({ hours: 6 })) {
-        firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(
+        firstPenaltiesTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(firstMeal)).diff(
           firstPeriodStart.plus({ hours: 6 })
         );
         
       }
-    } else if (outTime && outTime !== "") {
-      if (adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)) > firstPeriodStart.plus({ hours: 6 })) {
-        firstPenaltiesTime = DateTime.fromISO(outTime).diff(
+    } else if ( outTime !== "" ) {
+      let outDateTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime))
+      if (outDateTime > firstPeriodStart.plus({ hours: 6 })) {
+        firstPenaltiesTime = outDateTime.diff(
           firstPeriodStart.plus({ hours: 6 })
         );
         
