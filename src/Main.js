@@ -292,15 +292,17 @@ const Main = () => {
   const hoursMinusMeals = () => {
     //just calculated the number of hours worked, subtracting any meal breaks
     let combined = Duration.fromMillis(0);
-    if (firstLength !== "") {
-      let first = Duration.fromISOTime(firstLength);
-      if (secondLength !== "") {
-        let second = Duration.fromISOTime(secondLength);
-        combined = first.plus(second);
-      } else {
-        combined = first;
+    if ((inTime !== "") && (outTime !== "")){
+      if (firstLength !== "") {
+        let first = Duration.fromISOTime(firstLength);
+        if (secondLength !== "") {
+          let second = Duration.fromISOTime(secondLength);
+          combined = first.plus(second);
+        } else {
+          combined = first;
+        }
+        console.log(combined);
       }
-      console.log(combined);
     }
     return rawHours().minus(combined);
   };
@@ -344,6 +346,7 @@ const Main = () => {
     let secondPenalties = 0;
     let firstPenaltiesTime = Duration.fromMillis(0);
     let secondPenaltiesTime = Duration.fromMillis(0);
+    
     // maybe have  firstPenaltiesEnd, secondPenaltiesEnd?
     //a non-deductible breakfast (NDB) is 15 minutes long
     // if there is an NBD, meal penalties will start accruing
@@ -353,47 +356,51 @@ const Main = () => {
     //until a second meal break, or out time
     if (ndbTime && ndbTime !== "") {
       firstPeriodStart = DateTime.fromISO(ndbTime).plus({ minutes: 15 });
+      firstPeriodStart = adjustDay(DateTime.fromISO(inTime), firstPeriodStart)
     }
-    if (firstLength && firstLength !== "" && firstMeal && firstMeal !== "") {
+    if (firstLength !== "00:00" && firstMeal !== "") {
       let secondPeriodStart = DateTime.fromISO(firstMeal).plus(
         Duration.fromISOTime(firstLength)
       );
+      secondPeriodStart = adjustDay(DateTime.fromISO(inTime), secondPeriodStart)
       if (
-        secondLength &&
-        secondLength !== "" &&
-        secondMeal &&
+        secondLength !== "00:00" &&
         secondMeal !== ""
       ) {
         if (
-          DateTime.fromISO(secondMeal) > secondPeriodStart.plus({ hours: 6 })
+          adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(secondMeal)) > secondPeriodStart.plus({ hours: 6 })
         ) {
           secondPenaltiesTime = DateTime.fromISO(secondMeal).diff(
             secondPeriodStart.plus({ hours: 6 })
-          );
+          )
+          secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), secondPenaltiesTime)
         }
       } else {
-        if (outTime && outTime !== "") {
+        if (outTime !== "") {
           if (
-            DateTime.fromISO(outTime) > secondPeriodStart.plus({ hours: 6 })
+            adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)) > secondPeriodStart.plus({ hours: 6 })
           ) {
             secondPenaltiesTime = DateTime.fromISO(outTime).diff(
               secondPeriodStart.plus({ hours: 6 })
             );
+            secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), secondPenaltiesTime)
           }
         }
       }
       secondPenalties = Math.ceil(secondPenaltiesTime.as("minutes") / 15);
 
-      if (DateTime.fromISO(firstMeal) > firstPeriodStart.plus({ hours: 6 })) {
+      if (adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(firstMeal))  > firstPeriodStart.plus({ hours: 6 })) {
         firstPenaltiesTime = DateTime.fromISO(firstMeal).diff(
           firstPeriodStart.plus({ hours: 6 })
         );
+        firstPenaltiesTime = adjustDay(DateTime.fromISO(inTime), firstPenaltiesTime)
       }
     } else if (outTime && outTime !== "") {
-      if (DateTime.fromISO(outTime) > firstPeriodStart.plus({ hours: 6 })) {
+      if (adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)) > firstPeriodStart.plus({ hours: 6 })) {
         firstPenaltiesTime = DateTime.fromISO(outTime).diff(
           firstPeriodStart.plus({ hours: 6 })
         );
+        firstPenaltiesTime = adjustDay(DateTime.fromISO(inTime), firstPenaltiesTime)
       }
     }
     firstPenalties = Math.ceil(firstPenaltiesTime.as("minutes") / 15);
@@ -879,6 +886,8 @@ const Main = () => {
         <h4>
           hours minus meals: {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
         </h4>
+        <h4>lunch penalties: {mealPenalties().L}</h4>
+        <h4>dinner penalties: {mealPenalties().D}</h4>
       </form>
       <Mark />
       <Summary />
