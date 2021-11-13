@@ -544,7 +544,8 @@ const Main = () => {
           reg = [...nonMealHours[0], ...regHalf[0]];
           half = [...regHalf[1]];
         } else if (
-          //if the time duration of the time before first meal and the duration between first and second meal and the time after 2nd meal > 8 hours
+          //if the time duration of the time before first meal and the duration between first 
+          //and second meal and the time after 2nd meal > 8 hours
           nonMealHours[0]
             .toDuration()
             .plus(nonMealHours[1].toDuration())
