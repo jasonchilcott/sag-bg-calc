@@ -180,13 +180,13 @@ const Main = () => {
 
   const breaksHandler = (e) => {
     setMealBreaks(e.target.value);
-    if (parseInt(mealBreaks) > 2) {
+    if (parseInt(e.target.value) < 2) {
       setSecondLength("00:00");
-      setSecondMeal("")
+      setSecondMeal("");
     }
-    if (parseInt(mealBreaks) > 1) {
+    if (parseInt(e.target.value) < 1) {
       setFirstLength("00:00");
-      setFirstMeal("")
+      setFirstMeal("");
     }
   };
 
@@ -202,6 +202,7 @@ const Main = () => {
             name="firstMeal"
             min={inTime}
             max={outTime}
+            value={firstMeal}
             onChange={timeHandler}
           />
           <div>
@@ -238,6 +239,7 @@ const Main = () => {
             name="secondMeal"
             min={firstMeal}
             max={outTime}
+            value={secondMeal}
             onChange={timeHandler}
           />
           <div>
@@ -286,15 +288,15 @@ const Main = () => {
 
   const rawHours = () => {
     let start = DateTime.fromISO(inTime);
-    let end = (DateTime.fromISO(outTime));
-    end = adjustDay(start, end)
+    let end = DateTime.fromISO(outTime);
+    end = adjustDay(start, end);
     return end.diff(start);
   };
 
   const hoursMinusMeals = () => {
     //just calculated the number of hours worked, subtracting any meal breaks
     let combined = Duration.fromMillis(0);
-    if ((inTime !== "") && (outTime !== "")){
+    if (inTime !== "" && outTime !== "") {
       if (firstLength !== "") {
         let first = Duration.fromISOTime(firstLength);
         if (secondLength !== "") {
@@ -348,7 +350,7 @@ const Main = () => {
     let secondPenalties = 0;
     let firstPenaltiesTime = Duration.fromMillis(0);
     let secondPenaltiesTime = Duration.fromMillis(0);
-    
+
     // maybe have  firstPenaltiesEnd, secondPenaltiesEnd?
     //a non-deductible breakfast (NDB) is 15 minutes long
     // if there is an NBD, meal penalties will start accruing
@@ -358,53 +360,63 @@ const Main = () => {
     //until a second meal break, or out time
     if (ndbTime && ndbTime !== "") {
       firstPeriodStart = DateTime.fromISO(ndbTime).plus({ minutes: 15 });
-      firstPeriodStart = adjustDay(DateTime.fromISO(inTime), firstPeriodStart)
+      firstPeriodStart = adjustDay(DateTime.fromISO(inTime), firstPeriodStart);
     }
     if (firstLength !== "00:00" && firstMeal !== "") {
       let secondPeriodStart = DateTime.fromISO(firstMeal).plus(
         Duration.fromISOTime(firstLength)
       );
-      secondPeriodStart = adjustDay(DateTime.fromISO(inTime), secondPeriodStart)
-      if (
-        secondLength !== "00:00" &&
-        secondMeal !== ""
-      ) {
-        secondPeriodStart = adjustDay(DateTime.fromISO(inTime), secondPeriodStart)
+      secondPeriodStart = adjustDay(
+        DateTime.fromISO(inTime),
+        secondPeriodStart
+      );
+      if (secondLength !== "00:00" && secondMeal !== "") {
+        secondPeriodStart = adjustDay(
+          DateTime.fromISO(inTime),
+          secondPeriodStart
+        );
         if (
-          adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(secondMeal)) > secondPeriodStart.plus({ hours: 6 })
+          adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(secondMeal)) >
+          secondPeriodStart.plus({ hours: 6 })
         ) {
-          secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(secondMeal)).diff(
-            secondPeriodStart.plus({ hours: 6 })
-          )
-          
+          secondPenaltiesTime = adjustDay(
+            DateTime.fromISO(inTime),
+            DateTime.fromISO(secondMeal)
+          ).diff(secondPeriodStart.plus({ hours: 6 }));
         }
       } else {
         if (outTime !== "") {
           if (
-            adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)) > secondPeriodStart.plus({ hours: 6 })
+            adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)) >
+            secondPeriodStart.plus({ hours: 6 })
           ) {
-            secondPenaltiesTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime)).diff(
-              secondPeriodStart.plus({ hours: 6 })
-            );
-            
+            secondPenaltiesTime = adjustDay(
+              DateTime.fromISO(inTime),
+              DateTime.fromISO(outTime)
+            ).diff(secondPeriodStart.plus({ hours: 6 }));
           }
         }
       }
       secondPenalties = Math.ceil(secondPenaltiesTime.as("minutes") / 30);
 
-      if (adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(firstMeal))  > firstPeriodStart.plus({ hours: 6 })) {
-        firstPenaltiesTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(firstMeal)).diff(
-          firstPeriodStart.plus({ hours: 6 })
-        );
-        
+      if (
+        adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(firstMeal)) >
+        firstPeriodStart.plus({ hours: 6 })
+      ) {
+        firstPenaltiesTime = adjustDay(
+          DateTime.fromISO(inTime),
+          DateTime.fromISO(firstMeal)
+        ).diff(firstPeriodStart.plus({ hours: 6 }));
       }
-    } else if ( outTime !== "" ) {
-      let outDateTime = adjustDay(DateTime.fromISO(inTime), DateTime.fromISO(outTime))
+    } else if (outTime !== "") {
+      let outDateTime = adjustDay(
+        DateTime.fromISO(inTime),
+        DateTime.fromISO(outTime)
+      );
       if (outDateTime > firstPeriodStart.plus({ hours: 6 })) {
         firstPenaltiesTime = outDateTime.diff(
           firstPeriodStart.plus({ hours: 6 })
         );
-        
       }
     }
     firstPenalties = Math.ceil(firstPenaltiesTime.as("minutes") / 30);
@@ -447,121 +459,124 @@ const Main = () => {
   // }
 
   const timesToIntervals = () => {
-  if ((inTime && inTime !== "") && (outTime && outTime !== "")){
-    let a = DateTime.fromISO(inTime);
-    let b = DateTime.fromISO(outTime);
-    b = adjustDay(a, b)
-    let wholeDay = Interval.fromDateTimes(a, b);
-    let goldenTime;
-    //golden time is any hour or fraction of an hour after 16 hours, including meal time
-    //this bit splits any golden time into its own interval
-    if (wholeDay.toDuration > Duration.fromISOTime("16:00")) {
-      let goldSplit = wholeDay.splitAt(a.plus(Duration.fromISOTime("16:00")));
-      goldenTime = goldSplit[1];
-      wholeDay = goldSplit[0];
-    }
-    //meal breaks are not counted as work time. because night premiums stack with OT
-    //multipliers, we cannot simply subtract meal time from total hours to find
-    //the work hours, so this bit breaks the day up by creating intervals before/between/after meal breaks
-    //the first line checks to see if the day actually incudes any OT
-    let wDDur = wholeDay.toDuration()
-    let totalBreakDur = Duration.fromISOTime(firstLength).plus(Duration.fromISOTime(secondLength))
-    console.log(wDDur)
-    console.log(totalBreakDur)
-    if (
-      wDDur.minus(totalBreakDur) > Duration.fromISOTime("08:00")
-    ) {
-      let meals = [];
-      if (firstLength && firstLength !== "" && firstMeal && firstMeal !== "") {
-        let first = Interval.after(
-          DateTime.fromISO(firstMeal),
-          Duration.fromISOTime(firstLength)
-        );
-        meals.push(first);
+    if (inTime && inTime !== "" && outTime && outTime !== "") {
+      let a = DateTime.fromISO(inTime);
+      let b = DateTime.fromISO(outTime);
+      b = adjustDay(a, b);
+      let wholeDay = Interval.fromDateTimes(a, b);
+      let goldenTime;
+      //golden time is any hour or fraction of an hour after 16 hours, including meal time
+      //this bit splits any golden time into its own interval
+      if (wholeDay.toDuration > Duration.fromISOTime("16:00")) {
+        let goldSplit = wholeDay.splitAt(a.plus(Duration.fromISOTime("16:00")));
+        goldenTime = goldSplit[1];
+        wholeDay = goldSplit[0];
+      }
+      //meal breaks are not counted as work time. because night premiums stack with OT
+      //multipliers, we cannot simply subtract meal time from total hours to find
+      //the work hours, so this bit breaks the day up by creating intervals before/between/after meal breaks
+      //the first line checks to see if the day actually incudes any OT
+      let wDDur = wholeDay.toDuration();
+      let totalBreakDur = Duration.fromISOTime(firstLength).plus(
+        Duration.fromISOTime(secondLength)
+      );
+      console.log(wDDur);
+      console.log(totalBreakDur);
+      if (wDDur.minus(totalBreakDur) > Duration.fromISOTime("08:00")) {
+        let meals = [];
         if (
-          secondLength &&
-          secondLength !== "" &&
-          secondMeal &&
-          secondMeal !== ""
+          firstLength &&
+          firstLength !== "" &&
+          firstMeal &&
+          firstMeal !== ""
         ) {
-          let second = Interval.after(
-            DateTime.fromISO(secondMeal),
-            Duration.fromISOTime(secondLength)
+          let first = Interval.after(
+            DateTime.fromISO(firstMeal),
+            Duration.fromISOTime(firstLength)
           );
-          meals.push(second);
+          meals.push(first);
+          if (
+            secondLength &&
+            secondLength !== "" &&
+            secondMeal &&
+            secondMeal !== ""
+          ) {
+            let second = Interval.after(
+              DateTime.fromISO(secondMeal),
+              Duration.fromISOTime(secondLength)
+            );
+            meals.push(second);
+          }
         }
-      }
-      let nonMealHours = wholeDay.difference(meals);
+        let nonMealHours = wholeDay.difference(meals);
 
-      //the following chunk takes the work intervals which have any meal breaks
-      //removed and splits them into groups based on whether or not they are
-      //before or after the 8 hour mark, when 1.5x OT begins
+        //the following chunk takes the work intervals which have any meal breaks
+        //removed and splits them into groups based on whether or not they are
+        //before or after the 8 hour mark, when 1.5x OT begins
 
-      //i'm not very confident this is the best way to do this.
+        //i'm not very confident this is the best way to do this.
 
-      let reg = [];
-      let regHalf = [];
-      let half = [];
-      let double = []
-      //let halfDouble = []
-      let split
+        let reg = [];
+        let regHalf = [];
+        let half = [];
+        let double = [];
+        //let halfDouble = []
+        let split;
 
-      //if the first interval is more than 8 hours long (no meal break in the first 8hours)
-      if (nonMealHours[0].toDuration() > Duration.fromISOTime("08:00")) {
-        regHalf = [
-          ...nonMealHours[0].splitAt(
-            nonMealHours[0].start.plus(Duration.fromISOTime("08:00"))
-          ),
-        ];
-        reg = [regHalf[0]];
-        half = regHalf[1];
-      } else if (
-        //if the time duration of the time before first meal and the time after first meal > 8 hours
-        nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration()) >
-        Duration.fromISOTime("08:00")
-      ) {
-        split = nonMealHours[1].start.plus(
-          Duration.fromISOTime("08:00").minus(nonMealHours[0].toDuration())
-        );
-        regHalf = [...nonMealHours[1].splitAt(split)];
-        reg = [...nonMealHours[0], ...regHalf[0]];
-        half = [...regHalf[1]];
-      } else if (
-        //if the time duration of the time before first meal and the duration between first and second meal and the time after 2nd meal > 8 hours
-        nonMealHours[0].toDuration()
-          .plus(nonMealHours[1].toDuration())
-          .plus(nonMealHours[2].toDuration()) > Duration.fromISOTime("08:00")
-      ) {
-        split = nonMealHours[2].start.plus(
-          Duration.fromISOTime("08:00").minus(
-            nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration())
-          )
-        );
-        regHalf = [...nonMealHours[1].splitAt(split)];
-        reg = [...nonMealHours[0], ...nonMealHours[1], regHalf[0]];
-        half = [...regHalf[1]];
-      }
+        //if the first interval is more than 8 hours long (no meal break in the first 8hours)
+        if (nonMealHours[0].toDuration() > Duration.fromISOTime("08:00")) {
+          regHalf = [
+            ...nonMealHours[0].splitAt(
+              nonMealHours[0].start.plus(Duration.fromISOTime("08:00"))
+            ),
+          ];
+          reg = [regHalf[0]];
+          half = regHalf[1];
+        } else if (
+          //if the time duration of the time before first meal and the time after first meal > 8 hours
+          nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration()) >
+          Duration.fromISOTime("08:00")
+        ) {
+          split = nonMealHours[1].start.plus(
+            Duration.fromISOTime("08:00").minus(nonMealHours[0].toDuration())
+          );
+          regHalf = [...nonMealHours[1].splitAt(split)];
+          reg = [...nonMealHours[0], ...regHalf[0]];
+          half = [...regHalf[1]];
+        } else if (
+          //if the time duration of the time before first meal and the duration between first and second meal and the time after 2nd meal > 8 hours
+          nonMealHours[0]
+            .toDuration()
+            .plus(nonMealHours[1].toDuration())
+            .plus(nonMealHours[2].toDuration()) > Duration.fromISOTime("08:00")
+        ) {
+          split = nonMealHours[2].start.plus(
+            Duration.fromISOTime("08:00").minus(
+              nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration())
+            )
+          );
+          regHalf = [...nonMealHours[1].splitAt(split)];
+          reg = [...nonMealHours[0], ...nonMealHours[1], regHalf[0]];
+          half = [...regHalf[1]];
+        }
 
-      return [[reg], [half], [double], [goldenTime]]
+        return [[reg], [half], [double], [goldenTime]];
 
+        // let double = []
+        // let halfDouble = []
 
-      // let double = []
-      // let halfDouble = []
-
-      // if (half[0].toDuration() > Duration.fromISOTime('02:00')) {
-      //   halfDouble = [...half[0].splitAt(half[0].start.plus(Duration.fromISOTime('02:00')))]
-      //   half.push(halfDouble[0])
-      //   double = halfDouble[1]
-      // }
+        // if (half[0].toDuration() > Duration.fromISOTime('02:00')) {
+        //   halfDouble = [...half[0].splitAt(half[0].start.plus(Duration.fromISOTime('02:00')))]
+        //   half.push(halfDouble[0])
+        //   double = halfDouble[1]
+        // }
       }
     }
   };
 
   //console.log(hoursMinusMeals())
   console.log(totalBumps());
-  console.log(mealPenalties());
-  console.log(mealPenaltiesPay(mealPenalties()))
-  console.log(timesToIntervals())
+  console.log(timesToIntervals());
 
   return (
     <div className="main">
@@ -888,10 +903,17 @@ const Main = () => {
         <h4>second meal: {secondMeal}</h4>
         <h4>2nd length: {secondLength}</h4>
         <h4>
-          hours minus meals: {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
+          hours minus meals:{" "}
+          {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
         </h4>
-        <h4>lunch penalties: {mealPenalties().L}, $ {mealPenaltiesPay(mealPenalties().L)}</h4>
-        <h4>dinner penalties: {mealPenalties().D}, $ {mealPenaltiesPay(mealPenalties().D)}</h4>
+        <h4>
+          lunch penalties: {mealPenalties().L}, ${" "} 
+          {mealPenaltiesPay(mealPenalties().L)}
+        </h4>
+        <h4>
+          dinner penalties: {mealPenalties().D}, ${" "}
+          {mealPenaltiesPay(mealPenalties().D)}
+        </h4>
       </form>
       <Mark />
       <Summary />
