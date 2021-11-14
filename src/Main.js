@@ -305,7 +305,6 @@ const Main = () => {
         } else {
           combined = first;
         }
-        console.log(combined);
       }
     }
     return rawHours().minus(combined);
@@ -459,12 +458,12 @@ const Main = () => {
   // }
 
   const timesToIntervals = () => {
-    if (inTime && inTime !== "" && outTime && outTime !== "") {
+    if (inTime !== "" && outTime !== "") {
       let a = DateTime.fromISO(inTime);
       let b = DateTime.fromISO(outTime);
       b = adjustDay(a, b);
       let wholeDay = Interval.fromDateTimes(a, b);
-      let goldenTime;
+      let goldenTime = null;
       //golden time is any hour or fraction of an hour after 16 hours, including meal time
       //this bit splits any golden time into its own interval
       if (wholeDay.toDuration > Duration.fromISOTime("16:00")) {
@@ -480,14 +479,10 @@ const Main = () => {
       let totalBreakDur = Duration.fromISOTime(firstLength).plus(
         Duration.fromISOTime(secondLength)
       );
-      console.log(wDDur);
-      console.log(totalBreakDur);
       if (wDDur.minus(totalBreakDur) > Duration.fromISOTime("08:00")) {
         let meals = [];
         if (
-          firstLength &&
           firstLength !== "" &&
-          firstMeal &&
           firstMeal !== ""
         ) {
           let first = Interval.after(
@@ -496,9 +491,7 @@ const Main = () => {
           );
           meals.push(first);
           if (
-            secondLength &&
             secondLength !== "" &&
-            secondMeal &&
             secondMeal !== ""
           ) {
             let second = Interval.after(
@@ -530,8 +523,8 @@ const Main = () => {
               nonMealHours[0].start.plus(Duration.fromISOTime("08:00"))
             ),
           ];
-          reg = [regHalf[0]];
-          half = regHalf[1];
+          reg.push(regHalf[0]);
+          half.push(regHalf[1]);
         } else if (
           //if the time duration of the time before first meal and the time after first meal > 8 hours
           nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration()) >
@@ -540,9 +533,9 @@ const Main = () => {
           split = nonMealHours[1].start.plus(
             Duration.fromISOTime("08:00").minus(nonMealHours[0].toDuration())
           );
-          regHalf = [...nonMealHours[1].splitAt(split)];
-          reg = [...nonMealHours[0], ...regHalf[0]];
-          half = [...regHalf[1]];
+          regHalf.push(nonMealHours[1].splitAt(split));
+          reg.push(nonMealHours[0], regHalf[0]);
+          half.push(regHalf[1]);
         } else if (
           //if the time duration of the time before first meal and the duration between first 
           //and second meal and the time after 2nd meal > 8 hours
@@ -556,12 +549,12 @@ const Main = () => {
               nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration())
             )
           );
-          regHalf = [...nonMealHours[1].splitAt(split)];
-          reg = [...nonMealHours[0], ...nonMealHours[1], regHalf[0]];
-          half = [...regHalf[1]];
+          regHalf.push(nonMealHours[1].splitAt(split));
+          reg.push(nonMealHours[0], nonMealHours[1], regHalf[0]);
+          half.push(regHalf[1]);
         }
 
-        return [[reg], [half], [double], [goldenTime]];
+        return [reg, half, double, [goldenTime]];
 
         // let double = []
         // let halfDouble = []
