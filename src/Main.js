@@ -211,6 +211,7 @@ const Main = () => {
               id="half"
               name="firstLength"
               value="00:30"
+              checked={(firstLength === "00:30") ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="half">Half-hour</label>
@@ -221,6 +222,7 @@ const Main = () => {
               id="hour"
               name="firstLength"
               value="01:00"
+              checked={(firstLength === "01:00") ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="hour">1 Hour</label>
@@ -248,6 +250,7 @@ const Main = () => {
               id="half"
               name="secondLength"
               value="00:30"
+              checked={(secondLength === "00:30") ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="half">Half-hour</label>
@@ -258,6 +261,7 @@ const Main = () => {
               id="hour"
               name="secondLength"
               value="01:00"
+              checked={(secondLength === "01:00") ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="hour">1 Hour</label>
