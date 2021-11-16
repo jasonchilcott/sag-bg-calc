@@ -526,9 +526,9 @@ const Main = () => {
               nonMealHours[0].splitAt(
               nonMealHours[0].start.plus(Duration.fromISOTime("08:00"))
             )
-
-          reg = regHalf[0];
-          half = regHalf[1];
+          nonMealHours.splice(0, 1)
+          reg.push(regHalf.shift());
+          half.push(...regHalf, ...nonMealHours);
         } else if (
           //if the time duration of the time before first meal and the time after first meal > 8 hours
           nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration()) >
@@ -539,8 +539,9 @@ const Main = () => {
           );
           
           regHalf = nonMealHours[1].splitAt(split);
-          reg.push(nonMealHours[0], regHalf[0]);
-          half.push(regHalf[1]);
+          nonMealHours.splice(1, 1)
+          reg.push(nonMealHours.shift(), regHalf.shift());
+          half.push(...regHalf, ...nonMealHours);
         } else if (
           //if the time duration of the time before first meal and the duration between first 
           //and second meal and the time after 2nd meal > 8 hours
@@ -554,7 +555,7 @@ const Main = () => {
               nonMealHours[0].toDuration().plus(nonMealHours[1].toDuration())
             )
           );
-          regHalf = (nonMealHours[1].splitAt(split));
+          regHalf = nonMealHours[2].splitAt(split);
           reg.push(nonMealHours[0], nonMealHours[1], regHalf[0]);
           half.push(regHalf[1]);
         }
