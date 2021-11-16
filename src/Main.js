@@ -483,29 +483,29 @@ const Main = () => {
       let totalBreakDur = Duration.fromISOTime(firstLength).plus(
         Duration.fromISOTime(secondLength)
       );
-      if (wDDur.minus(totalBreakDur) > Duration.fromISOTime("08:00")) {
-        let meals = [];
+      let meals = [];
+      if (
+        firstLength !== "" &&
+        firstMeal !== ""
+      ) {
+        let first = Interval.after(
+          DateTime.fromISO(firstMeal),
+          Duration.fromISOTime(firstLength)
+        );
+        meals.push(first);
         if (
-          firstLength !== "" &&
-          firstMeal !== ""
+          secondLength !== "" &&
+          secondMeal !== ""
         ) {
-          let first = Interval.after(
-            DateTime.fromISO(firstMeal),
-            Duration.fromISOTime(firstLength)
+          let second = Interval.after(
+            DateTime.fromISO(secondMeal),
+            Duration.fromISOTime(secondLength)
           );
-          meals.push(first);
-          if (
-            secondLength !== "" &&
-            secondMeal !== ""
-          ) {
-            let second = Interval.after(
-              DateTime.fromISO(secondMeal),
-              Duration.fromISOTime(secondLength)
-            );
-            meals.push(second);
-          }
+          meals.push(second);
         }
-        let nonMealHours = wholeDay.difference(...meals);
+      }
+      let nonMealHours = wholeDay.difference(...meals);
+      if (wDDur.minus(totalBreakDur) > Duration.fromISOTime("08:00")) {
 
         //the following chunk takes the work intervals which have any meal breaks
         //removed and splits them into groups based on whether or not they are
@@ -570,7 +570,11 @@ const Main = () => {
         //   half.push(halfDouble[0])
         //   double = halfDouble[1]
         // }
+      } else {
+        let reg = [...nonMealHours]
+        return [reg, [], [], []]
       }
+
     }
   };
 
