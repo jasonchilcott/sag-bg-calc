@@ -25,7 +25,14 @@ const Main = () => {
   const [secondLength, setSecondLength] = useState("00:00");
   const [changes, setChanges] = useState(0);
   const [formalUni, setFormalUni] = useState([false, false]);
-  const [proops, setProops] = useState([ false, false, false, false, false, false ]);
+  const [proops, setProops] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
   //const [vehicles, setVehicles] = useState([false, false, false, false, false, false, false])
   const [miscBump, setMiscBump] = useState(0);
 
@@ -211,7 +218,7 @@ const Main = () => {
               id="half"
               name="firstLength"
               value="00:30"
-              checked={(firstLength === "00:30") ? true : false}
+              checked={firstLength === "00:30" ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="half">Half-hour</label>
@@ -222,7 +229,7 @@ const Main = () => {
               id="hour"
               name="firstLength"
               value="01:00"
-              checked={(firstLength === "01:00") ? true : false}
+              checked={firstLength === "01:00" ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="hour">1 Hour</label>
@@ -250,7 +257,7 @@ const Main = () => {
               id="half"
               name="secondLength"
               value="00:30"
-              checked={(secondLength === "00:30") ? true : false}
+              checked={secondLength === "00:30" ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="half">Half-hour</label>
@@ -261,7 +268,7 @@ const Main = () => {
               id="hour"
               name="secondLength"
               value="01:00"
-              checked={(secondLength === "01:00") ? true : false}
+              checked={secondLength === "01:00" ? true : false}
               onChange={lengthHandler}
             />
             <label htmlFor="hour">1 Hour</label>
@@ -478,25 +485,18 @@ const Main = () => {
       //meal breaks are not counted as work time. because night premiums stack with OT
       //multipliers, we cannot simply subtract meal time from total hours to find
       //the work hours, so this bit breaks the day up by creating intervals before/between/after meal breaks
-      //the first line checks to see if the day actually incudes any OT
       let wDDur = wholeDay.toDuration();
       let totalBreakDur = Duration.fromISOTime(firstLength).plus(
         Duration.fromISOTime(secondLength)
       );
       let meals = [];
-      if (
-        firstLength !== "" &&
-        firstMeal !== ""
-      ) {
+      if (firstLength !== "" && firstMeal !== "") {
         let first = Interval.after(
           DateTime.fromISO(firstMeal),
           Duration.fromISOTime(firstLength)
         );
         meals.push(first);
-        if (
-          secondLength !== "" &&
-          secondMeal !== ""
-        ) {
+        if (secondLength !== "" && secondMeal !== "") {
           let second = Interval.after(
             DateTime.fromISO(secondMeal),
             Duration.fromISOTime(secondLength)
@@ -505,8 +505,8 @@ const Main = () => {
         }
       }
       let nonMealHours = wholeDay.difference(...meals);
+      //checks to see if the day actually incudes any OT
       if (wDDur.minus(totalBreakDur) > Duration.fromISOTime("08:00")) {
-
         //the following chunk takes the work intervals which have any meal breaks
         //removed and splits them into groups based on whether or not they are
         //before or after the 8 hour mark, when 1.5x OT begins
@@ -517,16 +517,15 @@ const Main = () => {
         let regHalf = [];
         let half = [];
         let double = [];
-        //let halfDouble = []
+        let halfDouble = [];
         let split;
 
         //if the first interval is more than 8 hours long (no meal break in the first 8hours)
         if (nonMealHours[0].toDuration() > Duration.fromISOTime("08:00")) {
-          regHalf = 
-              nonMealHours[0].splitAt(
-              nonMealHours[0].start.plus(Duration.fromISOTime("08:00"))
-            )
-          nonMealHours.splice(0, 1)
+          regHalf = nonMealHours[0].splitAt(
+            nonMealHours[0].start.plus(Duration.fromISOTime("08:00"))
+          );
+          nonMealHours.splice(0, 1);
           reg.push(regHalf.shift());
           half.push(...regHalf, ...nonMealHours);
         } else if (
@@ -537,13 +536,13 @@ const Main = () => {
           split = nonMealHours[1].start.plus(
             Duration.fromISOTime("08:00").minus(nonMealHours[0].toDuration())
           );
-          
+
           regHalf = nonMealHours[1].splitAt(split);
-          nonMealHours.splice(1, 1)
+          nonMealHours.splice(1, 1);
           reg.push(nonMealHours.shift(), regHalf.shift());
           half.push(...regHalf, ...nonMealHours);
         } else if (
-          //if the time duration of the time before first meal and the duration between first 
+          //if the time duration of the time before first meal and the duration between first
           //and second meal and the time after 2nd meal > 8 hours
           nonMealHours[0]
             .toDuration()
@@ -560,6 +559,43 @@ const Main = () => {
           half.push(regHalf[1]);
         }
 
+        if (half[0].toDuration() > Duration.fromISOTime("02:00")) {
+          halfDouble = half[0].splitAt(
+            half[0].start.plus(Duration.fromISOTime("02:00"))
+          );
+          half.splice(0, 1, ...halfDouble);
+          double = half;
+          half = [double.shift()];
+        } else if (
+          half[0].toDuration().plus(half[1].toDuration()) >
+          Duration.fromISOTime("02:00")
+        ) {
+          split = half[1].start.plus(
+            Duration.fromISOTime("02:00").minus(half[0].toDuration())
+          );
+          halfDouble = half[1].splitAt(split);
+          half.splice(1, 1, ...halfDouble);
+          double = half;
+          half = double.slice(0, 2);
+          double.splice(0, 2);
+        } else if (
+          half[0]
+            .toDuration()
+            .plus(half[1].toDuration())
+            .plus(half[2].toDuration()) > Duration.fromISOTime("02:00")
+        ) {
+          split = half[2].start.plus(
+            Duration.fromISOTime("02:00").minus(
+              half[0].toDuration().plus(half[1].toDuration())
+            )
+          );
+          halfDouble = half[2].splitAt(split);
+          half.splice(2, 1, ...halfDouble);
+          double = half;
+          half = double.slice(0, 3);
+          double.splice(0, 3);
+        }
+
         return [reg, half, double, goldenTime];
 
         // let double = []
@@ -571,10 +607,9 @@ const Main = () => {
         //   double = halfDouble[1]
         // }
       } else {
-        let reg = [...nonMealHours]
-        return [reg, [], [], []]
+        let reg = [...nonMealHours];
+        return [reg, [], [], []];
       }
-
     }
   };
 
@@ -911,7 +946,7 @@ const Main = () => {
           {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
         </h4>
         <h4>
-          lunch penalties: {mealPenalties().L}, ${" "} 
+          lunch penalties: {mealPenalties().L}, ${" "}
           {mealPenaltiesPay(mealPenalties().L)}
         </h4>
         <h4>
