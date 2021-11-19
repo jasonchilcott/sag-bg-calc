@@ -475,6 +475,7 @@ const Main = () => {
       b = adjustDay(a, b);
       let wholeDay = Interval.fromDateTimes(a, b);
       let goldenTime;
+      let allIntervals 
       //golden time is any hour or fraction of an hour after 16 hours, including meal time
       //this bit splits any golden time into its own interval
       if (wholeDay.toDuration() > Duration.fromISOTime("16:00")) {
@@ -596,22 +597,27 @@ const Main = () => {
           double.splice(0, 3);
         }
 
-        return [reg, half, double, goldenTime];
+        allIntervals = {regularTime: reg, timeAndAHalf: half, doubleTime: double, goldenTime: goldenTime};
 
-        // let double = []
-        // let halfDouble = []
-
-        // if (half[0].toDuration() > Duration.fromISOTime('02:00')) {
-        //   halfDouble = [...half[0].splitAt(half[0].start.plus(Duration.fromISOTime('02:00')))]
-        //   half.push(halfDouble[0])
-        //   double = halfDouble[1]
-        // }
       } else {
         let reg = [...nonMealHours];
-        return [reg, [], [], []];
+        allIntervals = {regularTime: reg};
       }
+      allIntervals.regularTime.forEach(interval => {
+        interval['ot'] = 1
+      });
+      allIntervals.timeAndAHalf.forEach(interval => {
+        interval['ot'] = 1.5
+      });
+      allIntervals.doubleTime.forEach(interval => {
+        interval['ot'] = 2
+      });
+      return allIntervals
+
     }
   };
+
+  
 
   //console.log(hoursMinusMeals())
   console.log(totalBumps());
