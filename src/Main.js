@@ -648,8 +648,6 @@ const Main = () => {
     let splitInterval = int.splitAt(
       earlyN2.start,
       n1.start,
-      n2.start,
-      earlyN2.end,
       n1.end,
       n2.end
     );
@@ -666,15 +664,27 @@ const Main = () => {
       oneAM.plus({ days: 1 }),
       sixAM.plus({ days: 1 })
     );
-    if (int.overlaps(earlyN2)) {
-      int["night"] = 1.2;
-    }
-    if (int.overlaps(n1)) {
-      int["night"] = 1.1;
-    }
     if (int.overlaps(n2)) {
       int["night"] = 1.2;
+    } else if (int.overlaps(earlyN2)) {
+      int["night"] = 1.2;
+    } else if (int.overlaps(n1)) {
+      int["night"] = 1.1;
+    } else {
+      int["night"] = 1;
     }
+  };
+
+  const sumDurations = (arrOfIntervals) => {
+    return arrOfIntervals
+      .map((int) => {
+        return int.toDuration().as("hours");
+      })
+      .reduce((a, b) => a + b);
+  };
+
+  const toTenths = (timeInHours) => {
+    return Math.ceil(timeInHours * 10) / 10;
   };
 
   const totalDollars = () => {
@@ -682,27 +692,46 @@ const Main = () => {
       let intervalArray = timesToIntervals();
       let hourRate = totalBaseRate() / 8;
       let gold = 0;
-      if (intervalArray[3] && intervalArray[3].ot === "gold") {
-        let goldenTime = intervalArray.pop().toDuration();
-        gold = Math.ceil(goldenTime.as("hours")) * totalBaseRate();
-      }
-      const hoursToDollars = (int) => {
-        let multiplier = int.otMultiplier * (int.night ?? 1);
-        let tenthsTime = Math.ceil(int.toDuration().as("hours") * 10) / 10;
-        return tenthsTime * hourRate * multiplier;
-      };
-
-      const reduceAllTimeToMoney = () => {
-        let moneyArr = intervalArray.flat(2).map((int) => {
-          return hoursToDollars(int);
-        });
-        let allHoursMoney = moneyArr.reduce((a, b) => a + b);
-        return allHoursMoney;
-      };
       let bothMealPenalties =
-        mealPenaltiesPay(mealPenalties().L) + mealPenaltiesPay(mealPenalties().D);
+        mealPenaltiesPay(mealPenalties().L) +
+        mealPenaltiesPay(mealPenalties().D);
+      if (hoursMinusMeals().as('hours') < 8) {
+        let n1Times = intervalArray.flat(2).filter((int) => {
+          int.night === 1.1;
+        });
+        let n2Times = intervalArray.flat(2).filter((int) => {
+          int.night === 1.2;
+        });
+        let n1Dur = 0;
+        let n2Dur = 0; 
 
-      return reduceAllTimeToMoney() + gold + totalBumps() + bothMealPenalties;
+        if (n1Times.length) {n1Dur = toTenths(sumDurations(n1Times))}
+        if (n2Times.length) {n2Dur = toTenths(sumDurations(n2Times))}
+
+        let daytime = 8 - (n1Dur + n2Dur)
+        let shortDayMoney = hourRate * (daytime + (n1Dur * 1.1) + (n2Dur * 1.2))
+        return shortDayMoney + totalBumps() + bothMealPenalties;
+      } else {
+        if (intervalArray[3] && intervalArray[3].ot === "gold") {
+          let goldenTime = intervalArray.pop().toDuration();
+          gold = Math.ceil(goldenTime.as("hours")) * totalBaseRate();
+        }
+        const hoursToDollars = (int) => {
+          let multiplier = int.otMultiplier * (int.night ?? 1);
+          let tenthsTime = toTenths(int.toDuration().as("hours"));
+          return tenthsTime * hourRate * multiplier;
+        };
+  
+        const reduceAllTimeToMoney = () => {
+          let moneyArr = intervalArray.flat(2).map((int) => {
+            return hoursToDollars(int);
+          });
+          let allHoursMoney = moneyArr.reduce((a, b) => a + b);
+          return allHoursMoney;
+        };
+  
+        return reduceAllTimeToMoney() + gold + totalBumps() + bothMealPenalties;
+      }
     }
   };
 
