@@ -475,7 +475,7 @@ const Main = () => {
       b = adjustDay(a, b);
       let wholeDay = Interval.fromDateTimes(a, b);
       let goldenTime;
-      let allIntervals 
+      let allIntervals = [[], [], [], []];
       //golden time is any hour or fraction of an hour after 16 hours, including meal time
       //this bit splits any golden time into its own interval
       if (wholeDay.toDuration() > Duration.fromISOTime("16:00")) {
@@ -597,27 +597,85 @@ const Main = () => {
           double.splice(0, 3);
         }
 
-        allIntervals = {regularTime: reg, timeAndAHalf: half, doubleTime: double, goldenTime: goldenTime};
-
+        allIntervals = [reg, half, double];
       } else {
         let reg = [...nonMealHours];
-        allIntervals = {regularTime: reg};
+        allIntervals = [reg, [], [], []];
       }
-      allIntervals.regularTime.forEach(interval => {
-        interval['ot'] = 1
-      });
-      allIntervals.timeAndAHalf.forEach(interval => {
-        interval['ot'] = 1.5
-      });
-      allIntervals.doubleTime.forEach(interval => {
-        interval['ot'] = 2
-      });
-      return allIntervals
 
+      allIntervals.forEach((group) => {
+        group.forEach((int, index) => {
+          group.splice(index, 1, ...nightPremiumsSplit(int));
+        });
+      });
+
+      allIntervals.forEach((group) => {
+        group.forEach((interval) => {
+          nightPremiumsAssign(interval);
+        });
+      });
+
+      allIntervals[0].forEach((interval) => {
+        interval["otMultiplier"] = 1;
+      });
+      allIntervals[1].forEach((interval) => {
+        interval["otMultiplier"] = 1.5;
+      });
+      allIntervals[2].forEach((interval) => {
+        interval["otMultiplier"] = 2;
+      });
+
+      if (goldenTime) {
+        goldenTime["ot"] = "gold";
+        allIntervals.push(goldenTime);
+      }
+
+      return allIntervals;
     }
   };
 
-  
+  const nightPremiumsSplit = (interval) => {
+    const oneAM = DateTime.fromISO("01:00");
+    const sixAM = DateTime.fromISO("06:00");
+    const eightPM = DateTime.fromISO("20:00");
+    const earlyN2 = Interval.fromDateTimes(oneAM, sixAM);
+    const n1 = Interval.fromDateTimes(eightPM, oneAM.plus({ days: 1 }));
+    const n2 = Interval.fromDateTimes(
+      oneAM.plus({ days: 1 }),
+      sixAM.plus({ days: 1 })
+    );
+
+    let splitInterval = interval.splitAt(
+      earlyN2.start,
+      n1.start,
+      n2.start,
+      earlyN2.end,
+      n1.end,
+      n2.end
+    );
+    return splitInterval;
+  };
+
+  const nightPremiumsAssign = (interval) => {
+    const oneAM = DateTime.fromISO("01:00");
+    const sixAM = DateTime.fromISO("06:00");
+    const eightPM = DateTime.fromISO("20:00");
+    const earlyN2 = Interval.fromDateTimes(oneAM, sixAM);
+    const n1 = Interval.fromDateTimes(eightPM, oneAM.plus({ days: 1 }));
+    const n2 = Interval.fromDateTimes(
+      oneAM.plus({ days: 1 }),
+      sixAM.plus({ days: 1 })
+    );
+    if (interval.overlaps(earlyN2)) {
+      interval["night"] = 1.2;
+    }
+    if (interval.overlaps(n1)) {
+      interval["night"] = 1.1;
+    }
+    if (interval.overlaps(n2)) {
+      interval["night"] = 1.2;
+    }
+  };
 
   //console.log(hoursMinusMeals())
   console.log(totalBumps());
