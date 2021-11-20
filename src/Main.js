@@ -634,7 +634,7 @@ const Main = () => {
     }
   };
 
-  const nightPremiumsSplit = (interval) => {
+  const nightPremiumsSplit = (int) => {
     const oneAM = DateTime.fromISO("01:00");
     const sixAM = DateTime.fromISO("06:00");
     const eightPM = DateTime.fromISO("20:00");
@@ -645,7 +645,7 @@ const Main = () => {
       sixAM.plus({ days: 1 })
     );
 
-    let splitInterval = interval.splitAt(
+    let splitInterval = int.splitAt(
       earlyN2.start,
       n1.start,
       n2.start,
@@ -656,7 +656,7 @@ const Main = () => {
     return splitInterval;
   };
 
-  const nightPremiumsAssign = (interval) => {
+  const nightPremiumsAssign = (int) => {
     const oneAM = DateTime.fromISO("01:00");
     const sixAM = DateTime.fromISO("06:00");
     const eightPM = DateTime.fromISO("20:00");
@@ -666,19 +666,48 @@ const Main = () => {
       oneAM.plus({ days: 1 }),
       sixAM.plus({ days: 1 })
     );
-    if (interval.overlaps(earlyN2)) {
-      interval["night"] = 1.2;
+    if (int.overlaps(earlyN2)) {
+      int["night"] = 1.2;
     }
-    if (interval.overlaps(n1)) {
-      interval["night"] = 1.1;
+    if (int.overlaps(n1)) {
+      int["night"] = 1.1;
     }
-    if (interval.overlaps(n2)) {
-      interval["night"] = 1.2;
+    if (int.overlaps(n2)) {
+      int["night"] = 1.2;
     }
   };
 
-  //console.log(hoursMinusMeals())
-  console.log(totalBumps());
+  const totalDollars = () => {
+    if (inTime !== "" && outTime !== "") {
+      let intervalArray = timesToIntervals();
+      let hourRate = totalBaseRate() / 8;
+      let gold = 0;
+      if (intervalArray[3] && intervalArray[3].ot === "gold") {
+        let goldenTime = intervalArray.pop().toDuration();
+        gold = Math.ceil(goldenTime.as("hours")) * totalBaseRate();
+      }
+      const hoursToDollars = (int) => {
+        let multiplier = int.otMultiplier * (int.night ?? 1);
+        let tenthsTime = Math.ceil(int.toDuration().as("hours") * 10) / 10;
+        return tenthsTime * hourRate * multiplier;
+      };
+
+      const reduceAllTimeToMoney = () => {
+        let moneyArr = intervalArray.flat(2).map((int) => {
+          return hoursToDollars(int);
+        });
+        let allHoursMoney = moneyArr.reduce((a, b) => a + b);
+        return allHoursMoney;
+      };
+      let bothMealPenalties =
+        mealPenaltiesPay(mealPenalties().L) + mealPenaltiesPay(mealPenalties().D);
+
+      return reduceAllTimeToMoney() + gold + totalBumps() + bothMealPenalties;
+    }
+  };
+
+  console.log(totalDollars());
+
   console.log(timesToIntervals());
 
   return (
