@@ -69,10 +69,26 @@ const Mark = (props) => {
       )
     }
   }
+
+  const displayGold = () => {
+    if ( props.intervals ) {
+      if ( props.intervals[3] && props.intervals[3].ot === "gold") {
+        let goldenTime = props.intervals[3].toDuration();
+        let gold = Math.ceil(goldenTime.as("hours"));
+        return (
+          <div className={"golden-time"}>
+            <p>GOLDEN TIME x {gold} !!!</p>
+          </div>
+        )
+      }
+
+    }
+  }
  
   return (
     <div className="mark">
       <h2>MARK</h2>
+      {displayGold()}
       {props.intervals ? displayMealPenalties() : null}
       {displayNightPremiums()}
       { props.changes ? <p>Wardrobe: {props.changes}C</p> : null }
