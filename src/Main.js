@@ -431,7 +431,7 @@ const Main = () => {
     }
     firstPenalties = Math.ceil(firstPenaltiesTime.as("minutes") / 30);
 
-    return { L: firstPenalties, D: secondPenalties };
+    return { 'first': firstPenalties, 'second': secondPenalties };
   };
 
   const mealPenaltiesPay = (mealPenalties) => {
@@ -934,7 +934,7 @@ const Main = () => {
               checked={formalUni[0]}
               onChange={formalUniHandler}
             />
-            <label htmlFor="formalwear">Formalwear</label>
+            <label htmlFor="formalwear">Formal wear</label>
           </div>
           <div>
             <input
@@ -1051,32 +1051,8 @@ const Main = () => {
             onChange={(e) => setMiscBump(e.target.value)}
           />
         </div>
-        <h4>role: {role}</h4>
-        <h4>base Rate: {baseRate()}</h4>
-        <h4>base Rate Bumps: {totalBaseBumps()}</h4>
-        <h4>total base Rate: {totalBaseRate()}</h4>
-        <h4>time in: {inTime}</h4>
-        <h4>time out: {outTime}</h4>
-        <h4>nbd: {ndbTime}</h4>
-        <h4>max ndb: {maxNdb()}</h4>
-        <h4>first Meal: {firstMeal}</h4>
-        <h4>1st length: {firstLength}</h4>
-        <h4>second meal: {secondMeal}</h4>
-        <h4>2nd length: {secondLength}</h4>
-        <h4>
-          hours minus meals:{" "}
-          {Math.ceil(hoursMinusMeals().as("hours") * 10) / 10}
-        </h4>
-        <h4>
-          lunch penalties: {mealPenalties().L}, ${" "}
-          {mealPenaltiesPay(mealPenalties().L)}
-        </h4>
-        <h4>
-          dinner penalties: {mealPenalties().D}, ${" "}
-          {mealPenaltiesPay(mealPenalties().D)}
-        </h4>
       </form>
-      <Mark />
+      <Mark mealPenalties={mealPenalties()} intervals={timesToIntervals()} changes={changes} formalUni={formalUni} proops={proops} miscBump={miscBump}/>
       <Summary />
     </div>
   );

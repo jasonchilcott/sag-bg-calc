@@ -4,7 +4,7 @@ const Footer = () => {
 
   return (
     <footer className="footer">
-      <h4>BG CALC FootER</h4>
+      <p>Made by <a href="https://www.jasonchilcott.com/">Jason Chilcott</a>. <a href="https://github.com/jasonchilcott/sag-bg-calc">Github Repo</a>.</p>
     </footer>
   )
 }
