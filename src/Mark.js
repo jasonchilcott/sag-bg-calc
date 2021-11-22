@@ -24,27 +24,29 @@ const Mark = (props) => {
   }
 
   const displayNightPremiums = () => {
-    let text = ""
-    let n1 = (props.intervals.flat(2).some( e => e.night === 1.1))
-    let n2 = (props.intervals.flat(2).some( e => e.night === 1.2))
+    if (props.intervals){
+      let text = ""
+      let n1 = (props.intervals.flat(2).some( e => e.night === 1.1))
+      let n2 = (props.intervals.flat(2).some( e => e.night === 1.2))
 
-    if ( n1 || n2 ) {
-      text += "Night Premiums: "
-      if ( n1 ) {
-        text += "N1"
+      if ( n1 || n2 ) {
+        text += "Night Premiums: "
+        if ( n1 ) {
+          text += "N1"
+          if (n2) {
+            text += ", "
+          }
+        }
         if (n2) {
-          text += ", "
+          text += "N2"
         }
       }
-      if (n2) {
-        text += "N2"
-      }
+      return (
+        <div className="night-premiums">
+          <p>{text}</p>
+        </div>
+      )
     }
-    return (
-      <div className="night-premiums">
-        <p>{text}</p>
-      </div>
-    )
   }
 
   const displayProops = () => {
@@ -71,7 +73,7 @@ const Mark = (props) => {
   return (
     <div className="mark">
       <h2>MARK</h2>
-      {displayMealPenalties()}
+      {props.intervals ? displayMealPenalties() : null}
       {displayNightPremiums()}
       { props.changes ? <p>Wardrobe: {props.changes}C</p> : null }
       { props.formalUni[0] ? <p>Wardrobe: Formal wear</p> : null }

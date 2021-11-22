@@ -1053,7 +1053,7 @@ const Main = () => {
         </div>
       </form>
       <Mark mealPenalties={mealPenalties()} intervals={timesToIntervals()} changes={changes} formalUni={formalUni} proops={proops} miscBump={miscBump}/>
-      <Summary />
+      <Summary mealPenalties={mealPenalties()} intervals={timesToIntervals()} totalBaseRate={totalBaseRate()} toTenths={toTenths} sumDurations={sumDurations} hoursMinusMeals={hoursMinusMeals()} totalBumps={totalBumps()} changes={changes} formalUni={formalUni} proops={proops} miscBump={miscBump}/>
     </div>
   );
 };
