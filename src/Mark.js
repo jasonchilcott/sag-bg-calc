@@ -23,6 +23,15 @@ const Mark = (props) => {
     )
   }
 
+  const displayBaseBumps = () => {
+    const baseBumpsNames = ['Make Up/Beard', 'Smoke', 'Wet', 'Other Bump']
+    return props.baseBumps.map( ( bump, i ) => {
+      if ( bump ) {
+        return <li>{baseBumpsNames[i]}</li>
+      }
+    })
+  }
+
   const displayNightPremiums = () => {
     if (props.intervals){
       let text = ""
@@ -91,6 +100,9 @@ const Mark = (props) => {
       {displayGold()}
       {props.intervals ? displayMealPenalties() : null}
       {displayNightPremiums()}
+      <ul className="base-bumps">
+        {displayBaseBumps()}
+      </ul>
       { props.changes ? <p>Wardrobe: {props.changes}C</p> : null }
       { props.formalUni[0] ? <p>Wardrobe: Formal wear</p> : null }
       { props.formalUni[1] ? <p>Wardrobe: Uniform</p> : null }

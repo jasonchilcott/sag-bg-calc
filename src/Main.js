@@ -431,7 +431,7 @@ const Main = () => {
     }
     firstPenalties = Math.ceil(firstPenaltiesTime.as("minutes") / 30);
 
-    return { 'first': firstPenalties, 'second': secondPenalties };
+    return { first: firstPenalties, second: secondPenalties };
   };
 
   const mealPenaltiesPay = (mealPenalties) => {
@@ -645,12 +645,7 @@ const Main = () => {
       sixAM.plus({ days: 1 })
     );
 
-    let splitInterval = int.splitAt(
-      earlyN2.start,
-      n1.start,
-      n1.end,
-      n2.end
-    );
+    let splitInterval = int.splitAt(earlyN2.start, n1.start, n1.end, n2.end);
     return splitInterval;
   };
 
@@ -695,7 +690,7 @@ const Main = () => {
       let bothMealPenalties =
         mealPenaltiesPay(mealPenalties().L) +
         mealPenaltiesPay(mealPenalties().D);
-      if (hoursMinusMeals().as('hours') < 8) {
+      if (hoursMinusMeals().as("hours") < 8) {
         let n1Times = intervalArray.flat(2).filter((int) => {
           int.night === 1.1;
         });
@@ -703,13 +698,17 @@ const Main = () => {
           int.night === 1.2;
         });
         let n1Dur = 0;
-        let n2Dur = 0; 
+        let n2Dur = 0;
 
-        if (n1Times.length) {n1Dur = toTenths(sumDurations(n1Times))}
-        if (n2Times.length) {n2Dur = toTenths(sumDurations(n2Times))}
+        if (n1Times.length) {
+          n1Dur = toTenths(sumDurations(n1Times));
+        }
+        if (n2Times.length) {
+          n2Dur = toTenths(sumDurations(n2Times));
+        }
 
-        let daytime = 8 - (n1Dur + n2Dur)
-        let shortDayMoney = hourRate * (daytime + (n1Dur * 1.1) + (n2Dur * 1.2))
+        let daytime = 8 - (n1Dur + n2Dur);
+        let shortDayMoney = hourRate * (daytime + n1Dur * 1.1 + n2Dur * 1.2);
         return shortDayMoney + totalBumps() + bothMealPenalties;
       } else {
         if (intervalArray[3] && intervalArray[3].ot === "gold") {
@@ -721,7 +720,7 @@ const Main = () => {
           let tenthsTime = toTenths(int.toDuration().as("hours"));
           return tenthsTime * hourRate * multiplier;
         };
-  
+
         const reduceAllTimeToMoney = () => {
           let moneyArr = intervalArray.flat(2).map((int) => {
             return hoursToDollars(int);
@@ -729,7 +728,7 @@ const Main = () => {
           let allHoursMoney = moneyArr.reduce((a, b) => a + b);
           return allHoursMoney;
         };
-  
+
         return reduceAllTimeToMoney() + gold + totalBumps() + bothMealPenalties;
       }
     }
@@ -1052,8 +1051,29 @@ const Main = () => {
           />
         </div>
       </form>
-      <Mark mealPenalties={mealPenalties()} intervals={timesToIntervals()} changes={changes} formalUni={formalUni} proops={proops} miscBump={miscBump}/>
-      <Summary mealPenalties={mealPenalties()} intervals={timesToIntervals()} totalBaseRate={totalBaseRate()} toTenths={toTenths} sumDurations={sumDurations} hoursMinusMeals={hoursMinusMeals()} totalBumps={totalBumps()} changes={changes} formalUni={formalUni} proops={proops} miscBump={miscBump}/>
+      <Mark
+        mealPenalties={mealPenalties()}
+        intervals={timesToIntervals()}
+        changes={changes}
+        formalUni={formalUni}
+        proops={proops}
+        miscBump={miscBump}
+        baseBumps={baseBumps}
+      />
+      <Summary
+        mealPenalties={mealPenalties()}
+        intervals={timesToIntervals()}
+        totalBaseRate={totalBaseRate()}
+        toTenths={toTenths}
+        sumDurations={sumDurations}
+        hoursMinusMeals={hoursMinusMeals()}
+        totalBumps={totalBumps()}
+        changes={changes}
+        formalUni={formalUni}
+        proops={proops}
+        miscBump={miscBump}
+        baseBumps={baseBumps}
+      />
     </div>
   );
 };

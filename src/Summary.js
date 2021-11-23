@@ -18,6 +18,20 @@ const Summary = (props) => {
     return pay;
   };
 
+  const hoursToDollars = (int) => {
+    let multiplier = int.otMultiplier * (int.night ?? 1);
+    let tenthsTime = props.toTenths(int.toDuration().as("hours"));
+    return tenthsTime * (props.totalBaseRate / 8) * multiplier;
+  };
+
+  const reduceAllTimeToMoney = () => {
+    let moneyArr = props.intervals.flat(2).map((int) => {
+      return hoursToDollars(int);
+    });
+    let allHoursMoney = moneyArr.reduce((a, b) => a + b);
+    return allHoursMoney;
+  };
+
   const totalDollars = () => {
     if ( props.intervals ) {
       console.log(props.intervals)
@@ -48,29 +62,29 @@ const Summary = (props) => {
           let goldenTime = intervalArray.pop().toDuration();
           gold = Math.ceil(goldenTime.as("hours")) * props.totalBaseRate;
         }
-        const hoursToDollars = (int) => {
-          let multiplier = int.otMultiplier * (int.night ?? 1);
-          let tenthsTime = props.toTenths(int.toDuration().as("hours"));
-          return tenthsTime * hourRate * multiplier;
-        };
   
-        const reduceAllTimeToMoney = () => {
-          let moneyArr = intervalArray.flat(2).map((int) => {
-            return hoursToDollars(int);
-          });
-          let allHoursMoney = moneyArr.reduce((a, b) => a + b);
-          return allHoursMoney;
-        };
-  
-        return reduceAllTimeToMoney() + gold + props.totalBumps + bothMealPenalties;
+        return (Math.ceil((reduceAllTimeToMoney() + gold + props.totalBumps + bothMealPenalties) * 100) / 100).toFixed(2);
       }
     }
   };
+
+
 
   return (
     <div className="summary">
       <h2>SUMMARY</h2>
       <p>Total: $ {totalDollars()}</p>
+      <p>Base Rate: </p>
+      <p>1.5x Time: </p>
+      <p>2x Time: </p>
+      <p>Golden Time: </p>
+      <p>Night Premiums: </p>
+      <p>Lunch Penalties: $ {mealPenaltiesPay(props.mealPenalties.first).toFixed(2)}</p>
+      <p>Dinner Penalties: $ {mealPenaltiesPay(props.mealPenalties.second).toFixed(2)}</p>
+      <p>Wardrobe changes: </p>
+      <p>Formal Wear/Uniform: </p>
+      <p>Props: </p>
+      <p>Misc Bump: </p>
     </div>
   )
 }
