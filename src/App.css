@@ -3,5 +3,41 @@
 }
 
 .main {
-  margin-left: 15vw;
+  margin-left: 10vw;
+  margin-right: 25vw;
+}
+
+.main-form {
+  padding-left: 10vw;
+  padding-right: 10vw;
+  padding-top: 5vh;
+
+  border-width: 1px;
+  border-color: gray;
+  border-style: solid;
+}
+
+.base-rate {
+  padding-left: 5vw;
+  padding-right: 5vw;
+  padding-bottom: 30px;
+  margin-bottom: 5px;
+  border-width: 1px;
+  border-color: gray;
+  border-style: solid;
+}
+
+.hours {
+  padding-left: 5vw;
+  padding-right: 5vw;
+  padding-bottom: 30px;
+  border-width: 1px;
+  border-color: gray;
+  border-style: solid;
+}
+
+.base-rate-radio {
+  display: flex;
+  flex-flow: row;
+  
 }

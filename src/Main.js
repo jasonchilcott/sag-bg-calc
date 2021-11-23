@@ -740,9 +740,10 @@ const Main = () => {
 
   return (
     <div className="main">
-      <form>
+      <form className="main-form">
+        <div className="base-rate">
         <h2>Base Rate:</h2>
-        <div>
+        <div className="base-rate-radio">
           <input
             type="radio"
             id="background"
@@ -834,7 +835,10 @@ const Main = () => {
         </div>
         <div>{otherBaseBumpField()}</div>
 
-        <div>
+        </div>
+        
+
+        <div className="hours">
           <h2>Hours</h2>
           <label>Time in:</label>
           <input
