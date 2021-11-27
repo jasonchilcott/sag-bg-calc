@@ -8,6 +8,7 @@
 }
 
 .main-form {
+  
   padding-left: 10vw;
   padding-right: 10vw;
   padding-top: 5vh;
@@ -34,10 +35,4 @@
   border-width: 1px;
   border-color: gray;
   border-style: solid;
-}
-
-.base-rate-radio {
-  display: flex;
-  flex-flow: row;
-  
 }

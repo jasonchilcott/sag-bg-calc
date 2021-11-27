@@ -783,8 +783,8 @@ const Main = () => {
             onChange={roleHandler}
           />
           <label htmlFor="other">Other:</label>
+          {otherBaseRateField()}
         </div>
-        <div>{otherBaseRateField()}</div>
         <h2>Base Rate Bumps</h2>
         <div>
           <input
@@ -796,9 +796,7 @@ const Main = () => {
             onChange={baseBumpsHandler}
           />
           <label htmlFor="makeup-beard">Makeup/Beard</label>
-        </div>
-
-        <div>
+      
           <input
             type="checkbox"
             id="smoke"
@@ -808,9 +806,7 @@ const Main = () => {
             onChange={baseBumpsHandler}
           />
           <label htmlFor="smoke">Smoke</label>
-        </div>
-
-        <div>
+      
           <input
             type="checkbox"
             id="wet"
@@ -832,14 +828,15 @@ const Main = () => {
             onChange={baseBumpsHandler}
           />
           <label htmlFor="other">Other:</label>
+          {otherBaseBumpField()}
         </div>
-        <div>{otherBaseBumpField()}</div>
 
         </div>
         
 
         <div className="hours">
           <h2>Hours</h2>
+          <div>
           <label>Time in:</label>
           <input
             type="time"
@@ -848,6 +845,9 @@ const Main = () => {
             value={inTime}
             onChange={timeHandler}
           />
+
+          </div>
+          <div>
           <label>Time out:</label>
           <input
             type="time"
@@ -857,6 +857,8 @@ const Main = () => {
             value={outTime}
             onChange={timeHandler}
           />
+            
+          </div>
         </div>
         <h2>Meals</h2>
         <div>
@@ -915,169 +917,167 @@ const Main = () => {
 
         {mealBreaksField()}
 
-        <h2>Other Bumps</h2>
         <div>
-          <label htmlFor="changes">Wardrobe changes:</label>
-          <input
-            type="number"
-            id="changes"
-            name="changes"
-            min="0"
-            max="10"
-            value={changes}
-            onChange={changesHandler}
-          />
-          <h3>Formalwear/Uniform</h3>
-          <div>
+          <h2>Other Bumps</h2>
+            <div>
+              <label htmlFor="changes">Wardrobe changes:</label>
+                <input
+                  type="number"
+                  id="changes"
+                  name="changes"
+                  min="0"
+                  max="10"
+                  value={changes}
+                  onChange={changesHandler}
+                />
+            </div>
+            <div>
+            <h3>Formal Wear/Uniform</h3>
+              <div>
+                <input
+                  type="checkbox"
+                  id="formalwear"
+                  name="formalwear"
+                  value="0"
+                  checked={formalUni[0]}
+                  onChange={formalUniHandler}
+                />
+                <label htmlFor="formalwear">Formal wear</label>
+              
+                <input
+                  type="checkbox"
+                  id="uniform"
+                  name="uniform"
+                  value="1"
+                  checked={formalUni[1]}
+                  onChange={formalUniHandler}
+                />
+                <label htmlFor="uniform">Uniform</label>
+              </div>
+            </div>
+            <h3>Props</h3>
+            <div>
+              <input
+                type="checkbox"
+                id="camera"
+                name="camera"
+                value="0"
+                checked={proops[0]}
+                onChange={proopsHandler}
+              />
+              <label htmlFor="camera">Camera</label>
+            
+              <input
+                type="checkbox"
+                id="golf-clubs"
+                name="golf-clubs"
+                value="1"
+                checked={proops[1]}
+                onChange={proopsHandler}
+              />
+              <label htmlFor="golf-clubs">Golf Club(s)</label>
+            
+              <input
+                type="checkbox"
+                id="luggage"
+                name="luggage"
+                value="2"
+                checked={proops[2]}
+                onChange={proopsHandler}
+              />
+              <label htmlFor="luggage">Luggage</label>
+            
+              <input
+                type="checkbox"
+                id="pet"
+                name="pet"
+                value="3"
+                checked={proops[3]}
+                onChange={proopsHandler}
+              />
+              <label htmlFor="pet">Pet</label>
+            
+              <input
+                type="checkbox"
+                id="skis"
+                name="skis"
+                value="4"
+                checked={proops[4]}
+                onChange={proopsHandler}
+              />
+              <label htmlFor="skis">Skis</label>
+            
+              <input
+                type="checkbox"
+                id="tennis-racquet"
+                name="tennis-racquet"
+                value="5"
+                checked={proops[5]}
+                onChange={proopsHandler}
+              />
+              <label htmlFor="tennis-racquet">Tennis Racquet</label>
+            </div>
+            {/* <h3>Vehicles</h3>
+            <div>
+              <input type="checkbox" id="bike" name="bike" />
+              <label htmlFor="bike">Bike</label>
+            </div>
+            <div>
+              <input type="checkbox" id="car" name="car" />
+              <label htmlFor="car">car</label>
+            </div>
+            <div>
+              <input type="checkbox" id="moped" name="moped" />
+              <label htmlFor="moped">Moped</label>
+            </div>
+            <div>
+              <input type="checkbox" id="motorcycle" name="motorcycle" />
+              <label htmlFor="motorcycle">Motorcycle</label>
+            </div>
+            <div>
+              <input type="checkbox" id="skates" name="skates" />
+              <label htmlFor="skates">Rollerskates/Skateboard</label>
+            </div>
+            <div>
+              <input type="checkbox" id="trailer" name="trailer" />
+              <label htmlFor="trailer">Trailer</label>
+            </div> */}
+            <h3>Misc.</h3>
+            <label htmlFor="misc">Misc. Bump:</label>
+            $
             <input
-              type="checkbox"
-              id="formalwear"
-              name="formalwear"
-              value="0"
-              checked={formalUni[0]}
-              onChange={formalUniHandler}
+              type="number"
+              id="misc"
+              name="misc"
+              min="0"
+              value={miscBump}
+              onChange={(e) => setMiscBump(e.target.value)}
             />
-            <label htmlFor="formalwear">Formal wear</label>
           </div>
-          <div>
-            <input
-              type="checkbox"
-              id="uniform"
-              name="uniform"
-              value="1"
-              checked={formalUni[1]}
-              onChange={formalUniHandler}
-            />
-            <label htmlFor="uniform">Uniform</label>
-          </div>
-          <h3>Props</h3>
-          <div>
-            <input
-              type="checkbox"
-              id="camera"
-              name="camera"
-              value="0"
-              checked={proops[0]}
-              onChange={proopsHandler}
-            />
-            <label htmlFor="camera">Camera</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="golf-clubs"
-              name="golf-clubs"
-              value="1"
-              checked={proops[1]}
-              onChange={proopsHandler}
-            />
-            <label htmlFor="golf-clubs">Golf Club(s)</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="luggage"
-              name="luggage"
-              value="2"
-              checked={proops[2]}
-              onChange={proopsHandler}
-            />
-            <label htmlFor="luggage">Luggage</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="pet"
-              name="pet"
-              value="3"
-              checked={proops[3]}
-              onChange={proopsHandler}
-            />
-            <label htmlFor="pet">Pet</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="skis"
-              name="skis"
-              value="4"
-              checked={proops[4]}
-              onChange={proopsHandler}
-            />
-            <label htmlFor="skis">Skis</label>
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              id="tennis-racquet"
-              name="tennis-racquet"
-              value="5"
-              checked={proops[5]}
-              onChange={proopsHandler}
-            />
-            <label htmlFor="tennis-racquet">Tennis Racquet</label>
-          </div>
-          {/* <h3>Vehicles</h3>
-          <div>
-            <input type="checkbox" id="bike" name="bike" />
-            <label htmlFor="bike">Bike</label>
-          </div>
-          <div>
-            <input type="checkbox" id="car" name="car" />
-            <label htmlFor="car">car</label>
-          </div>
-          <div>
-            <input type="checkbox" id="moped" name="moped" />
-            <label htmlFor="moped">Moped</label>
-          </div>
-          <div>
-            <input type="checkbox" id="motorcycle" name="motorcycle" />
-            <label htmlFor="motorcycle">Motorcycle</label>
-          </div>
-          <div>
-            <input type="checkbox" id="skates" name="skates" />
-            <label htmlFor="skates">Rollerskates/Skateboard</label>
-          </div>
-          <div>
-            <input type="checkbox" id="trailer" name="trailer" />
-            <label htmlFor="trailer">Trailer</label>
-          </div> */}
-          <h3>Misc.</h3>
-          <label htmlFor="misc">Misc. Bump:</label>
-          $
-          <input
-            type="number"
-            id="misc"
-            name="misc"
-            min="0"
-            value={miscBump}
-            onChange={(e) => setMiscBump(e.target.value)}
-          />
-        </div>
-      </form>
-      <Mark
-        mealPenalties={mealPenalties()}
-        intervals={timesToIntervals()}
-        changes={changes}
-        formalUni={formalUni}
-        proops={proops}
-        miscBump={miscBump}
-        baseBumps={baseBumps}
-      />
-      <Summary
-        mealPenalties={mealPenalties()}
-        intervals={timesToIntervals()}
-        totalBaseRate={totalBaseRate()}
-        toTenths={toTenths}
-        sumDurations={sumDurations}
-        hoursMinusMeals={hoursMinusMeals()}
-        totalBumps={totalBumps()}
-        changes={changes}
-        formalUni={formalUni}
-        proops={proops}
-        miscBump={miscBump}
-        baseBumps={baseBumps}
-      />
+        </form>
+        <Mark
+          mealPenalties={mealPenalties()}
+          intervals={timesToIntervals()}
+          changes={changes}
+          formalUni={formalUni}
+          proops={proops}
+          miscBump={miscBump}
+          baseBumps={baseBumps}
+        />
+        <Summary
+          mealPenalties={mealPenalties()}
+          intervals={timesToIntervals()}
+          totalBaseRate={totalBaseRate()}
+          toTenths={toTenths}
+          sumDurations={sumDurations}
+          hoursMinusMeals={hoursMinusMeals()}
+          totalBumps={totalBumps()}
+          changes={changes}
+          formalUni={formalUni}
+          proops={proops}
+          miscBump={miscBump}
+          baseBumps={baseBumps}
+        />
     </div>
   );
 };
