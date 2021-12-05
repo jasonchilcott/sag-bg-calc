@@ -25,14 +25,9 @@ const Main = () => {
   const [secondLength, setSecondLength] = useState("00:00");
   const [changes, setChanges] = useState(0);
   const [formalUni, setFormalUni] = useState([false, false]);
-  const [proops, setProops] = useState([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
+  const [proops, setProops] = useState(
+    [ false, false, false, false, false, false]
+  );
   //const [vehicles, setVehicles] = useState([false, false, false, false, false, false, false])
   const [miscBump, setMiscBump] = useState(0);
 
