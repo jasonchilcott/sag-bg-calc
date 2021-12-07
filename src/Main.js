@@ -731,7 +731,7 @@ const Main = () => {
 
   console.log(totalDollars());
 
-  console.log(timesToIntervals());
+  
 
   return (
     <div className="main">

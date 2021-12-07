@@ -27,7 +27,7 @@ const Summary = (props) => {
   };
 
   const reduceAllTimeToMoney = () => {
-    let moneyArr = props.intervals.flat(2).map((int) => {
+    let moneyArr = props.intervals.slice(0, -1).flat(2).map((int) => {
       return hoursToDollars(int);
     });
     let allHoursMoney = moneyArr.reduce((a, b) => a + b);
@@ -61,7 +61,7 @@ const Summary = (props) => {
         return shortDayMoney + props.totalBumps + bothMealPenalties;
       } else {
         if (intervalArray[3] && intervalArray[3].ot === "gold") {
-          let goldenTime = intervalArray.pop().toDuration();
+          let goldenTime = intervalArray[3].toDuration();
           gold = Math.ceil(goldenTime.as("hours")) * props.totalBaseRate;
         }
   
@@ -70,10 +70,10 @@ const Summary = (props) => {
     }
   };
 
-  const timeAndAHalf = () => {
+  const displayHalfDollars = () => {
     if ( props.intervals ) {
       let otTimes = props.intervals[1]
-      console.log(otTimes)
+      
       if (otTimes.length) {
         let halfTime = otTimes.map((int) => {
           let tenthsTime = props.toTenths(int.toDuration().as("hours"))
@@ -88,10 +88,10 @@ const Summary = (props) => {
     }
   }
 
-  const doubleTime = () => {
+  const displayDoubleDollars = () => {
     if ( props.intervals ) {
       let otTimes = props.intervals[2]
-      console.log(otTimes)
+      
       if (otTimes.length) {
         let doubleInts = otTimes.map((int) => {
           let tenthsTime = props.toTenths(int.toDuration().as("hours"))
@@ -106,6 +106,21 @@ const Summary = (props) => {
     }
   }
 
+  const displayGoldDollars = () => {
+    if ( props.intervals ) {
+      if ( props.intervals[3] ) {
+        let gold
+        let goldenTime = props.intervals[3].toDuration();
+        goldenTime = Math.ceil(goldenTime.as("hours"))
+        gold = goldenTime * props.totalBaseRate
+        if (gold) {
+          return <p className='gold'>GOLDEN TIME: $ {gold}!!!</p>
+        }
+      } 
+
+    }
+  }
+
 
 
   return (
@@ -113,9 +128,9 @@ const Summary = (props) => {
       <h2>SUMMARY</h2>
       <p>Total: $ {totalDollars()}</p>
       <p>Base Rate: $ {props.totalBaseRate}</p>
-      <p>1.5x Time: $ {timeAndAHalf()}</p>
-      <p>2x Time: $ {doubleTime()}</p>
-      <p>Golden Time: </p>
+      <p>1.5x Time: $ {displayHalfDollars()}</p>
+      <p>2x Time: $ {displayDoubleDollars()}</p>
+      <>{displayGoldDollars()}</>
       <p>Night Premiums: </p>
       <p>Lunch Penalties: $ {mealPenaltiesPay(props.mealPenalties.first).toFixed(2)}</p>
       <p>Dinner Penalties: $ {mealPenaltiesPay(props.mealPenalties.second).toFixed(2)}</p>
