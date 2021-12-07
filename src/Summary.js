@@ -18,6 +18,8 @@ const Summary = (props) => {
     return pay;
   };
 
+  //const tenthsTime = (int) => {props.toTenths(int.toDuration().as("hours"));}
+
   const hoursToDollars = (int) => {
     let multiplier = int.otMultiplier * (int.night ?? 1);
     let tenthsTime = props.toTenths(int.toDuration().as("hours"));
@@ -34,7 +36,7 @@ const Summary = (props) => {
 
   const totalDollars = () => {
     if ( props.intervals ) {
-      console.log(props.intervals)
+      
       let intervalArray = props.intervals;
       let hourRate = props.totalBaseRate / 8;
       let gold = 0;
@@ -68,15 +70,51 @@ const Summary = (props) => {
     }
   };
 
+  const timeAndAHalf = () => {
+    if ( props.intervals ) {
+      let otTimes = props.intervals[1]
+      console.log(otTimes)
+      if (otTimes.length) {
+        let halfTime = otTimes.map((int) => {
+          let tenthsTime = props.toTenths(int.toDuration().as("hours"))
+          return tenthsTime * (props.totalBaseRate / 8) * 1.5
+        })
+        console.log(halfTime)
+        return halfTime.reduce((a, b) => a + b).toFixed(2)
+      } else {
+        return 0
+      }
+      
+    }
+  }
+
+  const doubleTime = () => {
+    if ( props.intervals ) {
+      let otTimes = props.intervals[2]
+      console.log(otTimes)
+      if (otTimes.length) {
+        let doubleInts = otTimes.map((int) => {
+          let tenthsTime = props.toTenths(int.toDuration().as("hours"))
+          return (tenthsTime * (props.totalBaseRate / 8) * 1.5)
+        })
+        console.log(doubleInts)
+        return doubleInts.reduce((a, b) => a + b).toFixed(2)
+      } else {
+        return 0
+      }
+      
+    }
+  }
+
 
 
   return (
     <div className="summary">
       <h2>SUMMARY</h2>
       <p>Total: $ {totalDollars()}</p>
-      <p>Base Rate: </p>
-      <p>1.5x Time: </p>
-      <p>2x Time: </p>
+      <p>Base Rate: $ {props.totalBaseRate}</p>
+      <p>1.5x Time: $ {timeAndAHalf()}</p>
+      <p>2x Time: $ {doubleTime()}</p>
       <p>Golden Time: </p>
       <p>Night Premiums: </p>
       <p>Lunch Penalties: $ {mealPenaltiesPay(props.mealPenalties.first).toFixed(2)}</p>
