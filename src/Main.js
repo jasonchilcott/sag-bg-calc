@@ -434,21 +434,6 @@ const Main = () => {
     return { first: firstPenalties, second: secondPenalties };
   };
 
-  const mealPenaltiesPay = (mealPenalties) => {
-    //this just converts the number of meal penalties to the total number of dollars
-
-    let pay = 0;
-    if (mealPenalties > 0) {
-      pay += 7.5;
-      if (mealPenalties > 1) {
-        pay += 10;
-        if (mealPenalties > 2) {
-          pay += (mealPenalties - 2) * 12.5;
-        }
-      }
-    }
-    return pay;
-  };
 
   const adjustDay = (a, b) => {
     //this just adds a day in cases where a time is after midnight
@@ -459,14 +444,6 @@ const Main = () => {
     return b;
   };
 
-  // class WorkTime extends Interval {
-  //   //i wrote this class thinking maybe i can add OT and night premium values
-  //   //to interval instances but i think i did it wrong
-  //   constructor(ot, night) {
-  //     this.ot = ot;
-  //     this.night = night;
-  //   }
-  // }
 
   const timesToIntervals = () => {
     if (inTime !== "" && outTime !== "") {
@@ -511,8 +488,6 @@ const Main = () => {
         //the following chunk takes the work intervals which have any meal breaks
         //removed and splits them into groups based on whether or not they are
         //before or after the 8 hour mark, when 1.5x OT begins
-
-        //i'm not very confident this is the best way to do this.
 
         let reg = [];
         let regHalf = [];
@@ -682,59 +657,59 @@ const Main = () => {
     return Math.ceil(timeInHours * 10) / 10;
   };
 
-  const totalDollars = () => {
-    if (inTime !== "" && outTime !== "") {
-      let intervalArray = timesToIntervals();
-      let hourRate = totalBaseRate() / 8;
-      let gold = 0;
-      let bothMealPenalties =
-        mealPenaltiesPay(mealPenalties().L) +
-        mealPenaltiesPay(mealPenalties().D);
-      if (hoursMinusMeals().as("hours") < 8) {
-        let n1Times = intervalArray.flat(2).filter((int) => {
-          int.night === 1.1;
-        });
-        let n2Times = intervalArray.flat(2).filter((int) => {
-          int.night === 1.2;
-        });
-        let n1Dur = 0;
-        let n2Dur = 0;
+  // const totalDollars = () => {
+  //   if (inTime !== "" && outTime !== "") {
+  //     let intervalArray = timesToIntervals();
+  //     let hourRate = totalBaseRate() / 8;
+  //     let gold = 0;
+  //     let bothMealPenalties =
+  //       mealPenaltiesPay(mealPenalties().L) +
+  //       mealPenaltiesPay(mealPenalties().D);
+  //     if (hoursMinusMeals().as("hours") < 8) {
+  //       let n1Times = intervalArray.flat(2).filter((int) => {
+  //         int.night === 1.1;
+  //       });
+  //       let n2Times = intervalArray.flat(2).filter((int) => {
+  //         int.night === 1.2;
+  //       });
+  //       let n1Dur = 0;
+  //       let n2Dur = 0;
 
-        if (n1Times.length) {
-          n1Dur = toTenths(sumDurations(n1Times));
-        }
-        if (n2Times.length) {
-          n2Dur = toTenths(sumDurations(n2Times));
-        }
+  //       if (n1Times.length) {
+  //         n1Dur = toTenths(sumDurations(n1Times));
+  //       }
+  //       if (n2Times.length) {
+  //         n2Dur = toTenths(sumDurations(n2Times));
+  //       }
 
-        let daytime = 8 - (n1Dur + n2Dur);
-        let shortDayMoney = hourRate * (daytime + n1Dur * 1.1 + n2Dur * 1.2);
-        return shortDayMoney + totalBumps() + bothMealPenalties;
-      } else {
-        if (intervalArray[3] && intervalArray[3].ot === "gold") {
-          let goldenTime = intervalArray.pop().toDuration();
-          gold = Math.ceil(goldenTime.as("hours")) * totalBaseRate();
-        }
-        const hoursToDollars = (int) => {
-          let multiplier = int.otMultiplier * (int.night ?? 1);
-          let tenthsTime = toTenths(int.toDuration().as("hours"));
-          return tenthsTime * hourRate * multiplier;
-        };
+  //       let daytime = 8 - (n1Dur + n2Dur);
+  //       let shortDayMoney = hourRate * (daytime + n1Dur * 1.1 + n2Dur * 1.2);
+  //       return shortDayMoney + totalBumps() + bothMealPenalties;
+  //     } else {
+  //       if (intervalArray[3] && intervalArray[3].ot === "gold") {
+  //         let goldenTime = intervalArray.pop().toDuration();
+  //         gold = Math.ceil(goldenTime.as("hours")) * totalBaseRate();
+  //       }
+  //       const hoursToDollars = (int) => {
+  //         let multiplier = int.otMultiplier * (int.night ?? 1);
+  //         let tenthsTime = toTenths(int.toDuration().as("hours"));
+  //         return tenthsTime * hourRate * multiplier;
+  //       };
 
-        const reduceAllTimeToMoney = () => {
-          let moneyArr = intervalArray.flat(2).map((int) => {
-            return hoursToDollars(int);
-          });
-          let allHoursMoney = moneyArr.reduce((a, b) => a + b);
-          return allHoursMoney;
-        };
+  //       const reduceAllTimeToMoney = () => {
+  //         let moneyArr = intervalArray.flat(2).map((int) => {
+  //           return hoursToDollars(int);
+  //         });
+  //         let allHoursMoney = moneyArr.reduce((a, b) => a + b);
+  //         return allHoursMoney;
+  //       };
 
-        return reduceAllTimeToMoney() + gold + totalBumps() + bothMealPenalties;
-      }
-    }
-  };
+  //       return reduceAllTimeToMoney() + gold + totalBumps() + bothMealPenalties;
+  //     }
+  //   }
+  // };
 
-  console.log(totalDollars());
+  // console.log(totalDollars());
 
   console.log(timesToIntervals());
 

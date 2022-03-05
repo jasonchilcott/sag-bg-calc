@@ -1,7 +1,6 @@
-import React from "react"
+import React from "react";
 
 const Summary = (props) => {
-
   const mealPenaltiesPay = (mealPenalties) => {
     //this just converts the number of meal penalties to the total number of dollars
 
@@ -55,7 +54,7 @@ const Summary = (props) => {
   //         int.night === 1.2;
   //       });
   //       let n1Dur = 0;
-  //       let n2Dur = 0; 
+  //       let n2Dur = 0;
 
   //       if (n1Times.length) {n1Dur = props.toTenths(props.sumDurations(n1Times))}
   //       if (n2Times.length) {n2Dur = props.toTenths(props.sumDurations(n2Times))}
@@ -68,7 +67,7 @@ const Summary = (props) => {
   //         let goldenTime = intervalArray.pop().toDuration();
   //         gold = Math.ceil(goldenTime.as("hours")) * props.totalBaseRate;
   //       }
-  
+
   //       return (Math.ceil((reduceAllTimeToMoney() + gold + props.totalBumps + bothMealPenalties) * 100) / 100).toFixed(2);
   //     }
   //   }
@@ -76,16 +75,36 @@ const Summary = (props) => {
 
   const getOt = (otType) => {
     if (props.intervals) {
-      let hours = props.intervals.flat(2)
-      let otHours = hours.filter(interval => interval.otMultiplier === otType );
-      let otMoney = otHours.map(int => hoursToDollars(int))
-      let otDollars = otMoney.reduce(
-        (a, b) => a + b, 0);
-      return otDollars
+      let hours = props.intervals.flat(2);
+      let otHours = hours.filter(
+        (interval) => interval.otMultiplier === otType
+      );
+      let otMoney = otHours.map((int) => hoursToDollars(int));
+      let otDollars = otMoney.reduce((a, b) => a + b, 0);
+      return otDollars;
     }
-  }
+  };
 
+  const getGold = () => {
+    if (props.intervals) {
+      let gold = 0;
+      if (props.intervals[3] && props.intervals[3].ot === "gold") {
+        let goldenTime = props.intervals[3].toDuration();
+        gold = Math.ceil(goldenTime.as("hours")) * props.totalBaseRate;
+      }
+      return gold;
+    }
+  };
 
+  const getChanges = () => {
+    let wardrobe = 0;
+    if (props.changes >= 1) {
+      wardrobe += 9;
+      let addtl = (props.changes - 1) * 6.25;
+      wardrobe += addtl;
+    }
+    return wardrobe;
+  };
 
   return (
     <div className="summary">
@@ -94,16 +113,16 @@ const Summary = (props) => {
       <p>Base Rate: $ {props.totalBaseRate}</p>
       <p>1.5x Time: $ {getOt(1.5)}</p>
       <p>2x Time: $ {getOt(2)}</p>
-      <p>Golden Time: $ </p>
+      <p>Golden Time: $ {getGold()}</p>
       <p>Night Premiums: $ </p>
       <p>Lunch Penalties: $ {mealPenaltiesPay(props.mealPenalties.first).toFixed(2)}</p>
       <p>Dinner Penalties: $ {mealPenaltiesPay(props.mealPenalties.second).toFixed(2)}</p>
-      <p>Wardrobe changes: </p>
+      <p>Wardrobe changes: $ {getChanges()}</p>
       <p>Formal Wear/Uniform: </p>
       <p>Props: </p>
       <p>Misc Bump: </p>
     </div>
-  )
-}
+  );
+};
 
-export default Summary
+export default Summary;
