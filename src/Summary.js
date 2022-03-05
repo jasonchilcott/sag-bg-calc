@@ -22,6 +22,8 @@ const Summary = (props) => {
   //   let tenthsTime = props.toTenths(int.toDuration().as("hours"));
   //   return tenthsTime * (props.totalBaseRate / 8) * multiplier;
   // };
+  //const tenthsTime = (int) => {props.toTenths(int.toDuration().as("hours"));}
+
 
   const hoursToDollars = (int) => {
     let multiplier = int.otMultiplier;
@@ -56,8 +58,10 @@ const Summary = (props) => {
   //       let n1Dur = 0;
   //       let n2Dur = 0;
 
+
   //       if (n1Times.length) {n1Dur = props.toTenths(props.sumDurations(n1Times))}
   //       if (n2Times.length) {n2Dur = props.toTenths(props.sumDurations(n2Times))}
+
 
   //       let daytime = 8 - (n1Dur + n2Dur)
   //       let shortDayMoney = hourRate * (daytime + (n1Dur * 1.1) + (n2Dur * 1.2))
@@ -95,6 +99,7 @@ const Summary = (props) => {
       return gold;
     }
   };
+
 
   const getChanges = () => {
     let wardrobe = 0;
