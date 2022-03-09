@@ -111,6 +111,29 @@ const Summary = (props) => {
     return wardrobe;
   };
 
+  const getUniPay = () => {
+    let uniPay = 0
+    if (props.formalUni[0]) {
+      uniPay += 36
+    }
+    if (props.formalUni[1]) {
+      uniPay += 18
+    }
+    return uniPay
+  }
+
+  const getProopsPay = () => {
+    let newProopsArr = props.proopsArr.map((proop, i) => {
+      if (props.proops[i] === false) {
+        return 0;
+      } else {
+        return proop;
+      }
+    });
+    let totalProops = newProopsArr.reduce((a, b) => a + b)
+    return totalProops
+  }
+
   return (
     <div className="summary">
       <h2>SUMMARY</h2>
@@ -123,9 +146,9 @@ const Summary = (props) => {
       <p>Lunch Penalties: $ {mealPenaltiesPay(props.mealPenalties.first).toFixed(2)}</p>
       <p>Dinner Penalties: $ {mealPenaltiesPay(props.mealPenalties.second).toFixed(2)}</p>
       <p>Wardrobe changes: $ {getChanges()}</p>
-      <p>Formal Wear/Uniform: </p>
-      <p>Props: </p>
-      <p>Misc Bump: </p>
+      <p>Formal Wear/Uniform: $ {getUniPay()}</p>
+      <p>Props: $ {getProopsPay()}</p>
+      <p>Misc Bump: $ {props.miscBump}</p>
     </div>
   );
 };

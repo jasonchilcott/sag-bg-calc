@@ -1047,6 +1047,7 @@ const Main = () => {
           proops={proops}
           miscBump={miscBump}
           baseBumps={baseBumps}
+          proopsArr={proopsArr}
         />
     </div>
   );
