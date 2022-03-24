@@ -27,7 +27,7 @@ const Mark = (props) => {
     const baseBumpsNames = ['Make Up/Beard', 'Smoke', 'Wet', 'Other Bump']
     return props.baseBumps.map( ( bump, i ) => {
       if ( bump ) {
-        return <li>{baseBumpsNames[i]}</li>
+        return <li key={baseBumpsNames[i]}>{baseBumpsNames[i]}</li>
       }
     })
   }

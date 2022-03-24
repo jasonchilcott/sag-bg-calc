@@ -85,7 +85,7 @@ const Summary = (props) => {
       );
       let otMoney = otHours.map((int) => hoursToDollars(int));
       let otDollars = otMoney.reduce((a, b) => a + b, 0);
-      return otDollars;
+      return otDollars.toFixed(2);
     }
   };
 
@@ -134,6 +134,29 @@ const Summary = (props) => {
     return totalProops
   }
 
+  const getNight = () => {
+    let nightPay = 0
+
+    if ( props.intervals ) {
+      let hourlyBase = props.totalBaseRate / 8
+      let hours = props.intervals.flat(2)
+        let nightTimes = hours.filter((int) => {
+          return (int.night === 1.1) || (int.night === 1.2)
+        });
+        let nightPayArr = nightTimes.map((interval) => {
+          let premium = interval.otMultiplier * (interval.night - 1)
+          let duration = props.toTenths(interval.toDuration().as('hours'))
+          return premium * duration * hourlyBase
+        }) 
+        console.log(nightPayArr)
+        nightPay = nightPayArr.reduce((a, b) => a + b, 0)
+      }
+      
+
+    return nightPay.toFixed(2)
+    
+  }
+
   return (
     <div className="summary">
       <h2>SUMMARY</h2>
@@ -142,7 +165,7 @@ const Summary = (props) => {
       <p>1.5x Time: $ {getOt(1.5)}</p>
       <p>2x Time: $ {getOt(2)}</p>
       <p>Golden Time: $ {getGold()}</p>
-      <p>Night Premiums: $ </p>
+      <p>Night Premiums: $ {getNight()}</p>
       <p>Lunch Penalties: $ {mealPenaltiesPay(props.mealPenalties.first).toFixed(2)}</p>
       <p>Dinner Penalties: $ {mealPenaltiesPay(props.mealPenalties.second).toFixed(2)}</p>
       <p>Wardrobe changes: $ {getChanges()}</p>
