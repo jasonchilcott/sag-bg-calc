@@ -105,7 +105,7 @@ const Main = () => {
   };
 
   const totalBaseRate = () => {
-    return totalBaseBumps().reduce((a, b) => a + b, baseRate());
+    return totalBaseBumps().reduce((a, b) => Number(a) + Number(b), baseRate());
   };
 
   const otherBaseRateField = () => {
